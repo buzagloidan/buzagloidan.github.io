@@ -14,7 +14,7 @@ author: Idan Buzaglo
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  CV: "downloads/CV.pdf"
+  CV: "CV.pdf"
   Projects: "https://github.com/buzagloidan"
 
 # --- Logo --- #
