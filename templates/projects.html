@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-4 mb-4">My Projects</h1>
+        <p class="lead">Here are some of the projects I've worked on. Feel free to check them out and leave feedback!</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    {% for project in projects %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title h4">{{ project.name }}</h2>
+                <p class="card-text">{{ project.description }}</p>
+                <a href="{{ project.link }}" class="btn btn-primary" target="_blank">View Project</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h2>Other Notable Work</h2>
+        <p>Besides the main projects listed above, I've also contributed to:</p>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="h5">Open Source Contributions</h3>
+                <p>I've contributed to several open source projects including [Project Name], where I [brief description of contribution].</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="h5">Hackathons</h3>
+                <p>Participated in [Hackathon Name] where my team and I created [Project Name], which [brief description of the project].</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="h5">Technical Writing</h3>
+                <p>I've written articles on [Topic] for [Platform/Publication], sharing my knowledge and experiences with the community.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

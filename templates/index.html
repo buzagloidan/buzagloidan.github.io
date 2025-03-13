@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section - Fullscreen with modern design -->
+<section id="hero">
+    <div class="hero-content w-100">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12 text-center">
+                    <h1 class="display-2 fw-bold text-gradient mb-3">{{ personal.name }}</h1>
+                    <h2 class="fs-2 mb-4">{{ personal.current_role }} at {{ personal.company }}</h2>
+                    <p class="lead mb-5">
+                        Transitioning from economics to artificial intelligence and data science. 
+                        Former {{ personal.previous_role }} at {{ personal.previous_org }}.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#projects" class="btn btn-primary btn-lg">
+                            <i class="bi bi-code-slash me-2"></i>View Projects
+                        </a>
+                        <a href="{{ personal.github }}" target="_blank" class="btn btn-outline-dark btn-lg">
+                            <i class="bi bi-github me-2"></i>GitHub
+                        </a>
+                        <a href="{{ personal.linkedin }}" target="_blank" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-linkedin me-2"></i>LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section with glass cards -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 mb-4">About Me</h2>
+                <p class="fs-5 mb-5">
+                    I'm an AI Solutions Engineer with a background in economics. My expertise spans both domains,
+                    allowing me to bring a unique perspective to data-driven solutions and artificial intelligence applications.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row mt-4 g-4">
+            <div class="col-md-6">
+                <div class="glass-card h-100">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4"><i class="bi bi-mortarboard me-2"></i>Education</h3>
+                        <div class="education-timeline">
+                            {% for edu in personal.education %}
+                            <div class="education-item">
+                                <div class="education-content">
+                                    <h4 class="h5 mb-1">{{ edu.degree }}</h4>
+                                    <p class="mb-0 text-muted">{{ edu.institution }}</p>
+                                    <span class="education-status">{{ edu.status }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card h-100">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4"><i class="bi bi-layers me-2"></i>Skills & Expertise</h3>
+                        
+                        <!-- Programming & Technical Skills -->
+                        <div class="skill-category mb-4">
+                            <h4 class="h5 mb-3"><i class="bi bi-code-square me-2"></i>Technical</h4>
+                            <div class="skill-cloud">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">SQL</span>
+                                <span class="skill-tag">Data Science</span>
+                                <span class="skill-tag">Machine Learning</span>
+                                <span class="skill-tag">AI Solutions</span>
+                                <span class="skill-tag">Data Analysis</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Economics Skills -->
+                        <div class="skill-category mb-4">
+                            <h4 class="h5 mb-3"><i class="bi bi-graph-up-arrow me-2"></i>Economics</h4>
+                            <div class="skill-cloud">
+                                <span class="skill-tag">Economic Analysis</span>
+                                <span class="skill-tag">Policy Research</span>
+                                <span class="skill-tag">Strategic Planning</span>
+                                <span class="skill-tag">Housing Economics</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Soft Skills -->
+                        <div class="skill-category">
+                            <h4 class="h5 mb-3"><i class="bi bi-people me-2"></i>Soft Skills</h4>
+                            <div class="skill-cloud">
+                                <span class="skill-tag">Problem Solving</span>
+                                <span class="skill-tag">Communication</span>
+                                <span class="skill-tag">Research</span>
+                                <span class="skill-tag">Project Management</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section with enhanced cards -->
+<section id="projects" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-heading display-5 text-center mb-5">Featured Projects</h2>
+        <div class="row g-4">
+            {% for project in projects %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm project-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="project-icon me-3">
+                                <i class="bi bi-braces-asterisk fs-3 text-primary"></i>
+                            </div>
+                            <h3 class="card-title h4 mb-0">{{ project.name }}</h3>
+                        </div>
+                        <p class="card-text">{{ project.description }}</p>
+                        <div class="tech-stack">
+                            <strong>Tech Stack:</strong>
+                            <div class="mt-2">
+                                {% for tech in project.tech.split(', ') %}
+                                <span class="tech-badge">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 p-4">
+                        <div class="d-flex gap-2">
+                            <a href="{{ project.github }}" target="_blank" class="btn btn-outline-dark flex-grow-1">
+                                <i class="bi bi-github me-2"></i>GitHub
+                            </a>
+                            <a href="{{ project.link }}" target="_blank" class="btn btn-primary flex-grow-1">
+                                <i class="bi bi-link-45deg me-2"></i>View Project
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Publications Section with enhanced timeline -->
+<section id="publications" class="py-5">
+    <div class="container">
+        <h2 class="section-heading display-5 text-center mb-5">Publications</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="timeline">
+                    {% for pub in publications %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">{{ pub.year }}</span>
+                            <h3 class="h4 mb-3">{{ pub.title }}</h3>
+                            <p class="text-muted mb-3">{{ pub.organization }}</p>
+                            <a href="{{ pub.link }}" target="_blank" class="btn btn-sm btn-primary">
+                                <i class="bi bi-file-earmark-text me-1"></i> Read Publication
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section with glass card -->
+<section id="contact" class="py-5 bg-light position-relative">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-heading display-5 mb-4">Get In Touch</h2>
+                <p class="fs-5 mb-5">
+                    Interested in collaborating on AI projects or want to discuss 
+                    potential opportunities? Feel free to connect with me.
+                </p>
+                
+                <div class="glass-card p-5 mb-5">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="contact-icon mb-3">
+                                    <i class="bi bi-github fs-1"></i>
+                                </div>
+                                <h4 class="h5 mb-2">GitHub</h4>
+                                <a href="{{ personal.github }}" target="_blank" class="text-decoration-none">buzagloidan</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="contact-icon mb-3">
+                                    <i class="bi bi-linkedin fs-1"></i>
+                                </div>
+                                <h4 class="h5 mb-2">LinkedIn</h4>
+                                <a href="{{ personal.linkedin }}" target="_blank" class="text-decoration-none">buzagloidan</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="contact-icon mb-3">
+                                    <i class="bi bi-envelope fs-1"></i>
+                                </div>
+                                <h4 class="h5 mb-2">Email</h4>
+                                <a href="mailto:{{ personal.email }}" class="text-decoration-none">{{ personal.email }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ personal.github }}" target="_blank" class="btn btn-dark btn-lg">
+                        <i class="bi bi-github me-2"></i>GitHub
+                    </a>
+                    <a href="{{ personal.linkedin }}" target="_blank" class="btn btn-primary btn-lg">
+                        <i class="bi bi-linkedin me-2"></i>LinkedIn
+                    </a>
+                    <a href="mailto:{{ personal.email }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-envelope me-2"></i>Email Me
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Copyright info -->
+    <div class="text-center mt-5">
+        <p class="text-muted small mb-0">&copy; {{ now.year }} {{ personal.name }}. All rights reserved.</p>
+    </div>
+</section>
+{% endblock %} 
