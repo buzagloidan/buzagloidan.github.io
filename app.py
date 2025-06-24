@@ -13,17 +13,17 @@ def home():
     projects = [
         {
             'name': 'SikumAI',
-            'description': 'A Telegram bot that automatically generates quizzes from uploaded documents (PDF, DOCX, PPTX, TXT) using Google\'s Gemini AI to help students learn and test their knowledge.',
-            'tech': 'Python, Telegram API, Google Gemini AI',
-            'github': 'https://github.com/buzagloidan/sikum-ai',
-            'link': 'http://SikumAI.com'
+            'description': 'An application designed specifically for Israeli students, transforming their study materials into interactive quizzes. Users can upload various document types, and the application leverages AI to automatically generate relevant questions, creating an engaging and effective learning experience.',
+            'tech': 'React Native, Python Flask, Google Gemini AI, Supabase',
+            'github': 'https://github.com/buzagloidan/SikumAI',
+            'link': 'http://sikumai.com'
         },
         {
-            'name': 'Jeenify',
-            'description': 'Chrome extension that enhances the prompt writing experience on Jeen.ai platforms with features like template management and history tracking.',
-            'tech': 'JavaScript, Chrome Extensions API, HTML/CSS',
-            'github': 'https://github.com/buzagloidan/jeenify',
-            'link': 'https://github.com/buzagloidan/jeenify'
+            'name': 'SlideVibe',
+            'description': 'The world\'s first AI-powered presentation editor with Cursor-like editing capabilities. Transform your markdown content into stunning slide presentations with intelligent AI assistance, real-time editing, and professional export formats.',
+            'tech': 'TypeScript, React, AI Integration, Markdown Processing',
+            'github': 'https://github.com/buzagloidan/SlideVibe',
+            'link': 'https://github.com/buzagloidan/SlideVibe'
         },
         {
             'name': 'AI News WhatsApp Channel',
@@ -53,7 +53,7 @@ def home():
     # Personal info
     personal = {
         'name': 'Idan Buzaglo',
-        'current_role': 'AI Solutions Engineer',
+        'current_role': 'AI Solutions Engineer @ Jeen.ai',
         'company': 'Jeen.ai',
         'education': [
             {
