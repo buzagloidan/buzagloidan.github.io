@@ -22,8 +22,9 @@
       --line-color: #c9b99a;
     }
 
-    html {
-      scroll-behavior: smooth;
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
@@ -33,30 +34,62 @@
       line-height: 1.6;
     }
 
-    /* Full viewport section */
-    section {
-      min-height: 100vh;
-      padding: var(--spacing);
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Two-column header */
-    .section-header {
+    /* Main layout: fixed left sidebar + scrollable right content */
+    .layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      height: 100vh;
+      padding: var(--spacing);
       gap: var(--spacing);
     }
 
-    .section-label {
+    /* Left sidebar - fixed navigation */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-item {
       font-size: 11px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: inherit;
+      padding: 0;
     }
 
-    /* Right side content area (description column) */
-    .section-right {
+    .nav-item:hover {
+      color: var(--text-dark);
+    }
+
+    .nav-item.active {
+      color: var(--text-dark);
+    }
+
+    /* Right content area - scrollable */
+    .content {
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+    .content {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Sections */
+    section {
+      min-height: 100%;
       display: flex;
       flex-direction: column;
     }
@@ -72,7 +105,7 @@
       font-weight: 600;
     }
 
-    /* Items list - now inside the right column */
+    /* Items list */
     .items {
       display: flex;
       flex-direction: column;
@@ -126,23 +159,26 @@
   </style>
 </head>
 <body>
-  <!-- ABOUT -->
-  <section>
-    <div class="section-header">
-      <div class="section-label">About</div>
-      <div class="section-right">
+  <div class="layout">
+    <!-- Left sidebar with navigation -->
+    <nav class="sidebar">
+      <button class="nav-item active" data-target="about">About</button>
+      <button class="nav-item" data-target="writing">Writing</button>
+      <button class="nav-item" data-target="talks">Talks</button>
+      <button class="nav-item" data-target="experience">Experience</button>
+    </nav>
+
+    <!-- Right scrollable content -->
+    <main class="content">
+      <!-- ABOUT -->
+      <section id="about">
         <div class="section-description">
           <strong>Osinachi Okpara</strong> is a software engineer focused on building products that are simple, fast, and delightful to use. Currently working on developer tools and open source projects.
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- WRITING -->
-  <section>
-    <div class="section-header">
-      <div class="section-label">Writing</div>
-      <div class="section-right">
+      <!-- WRITING -->
+      <section id="writing">
         <div class="section-description">
           Thoughts on software engineering, developer experience, and building for the web.
         </div>
@@ -169,15 +205,10 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- TALKS -->
-  <section>
-    <div class="section-header">
-      <div class="section-label">Talks</div>
-      <div class="section-right">
+      <!-- TALKS -->
+      <section id="talks">
         <div class="section-description">
           Conference talks and presentations on modern web development.
         </div>
@@ -197,15 +228,10 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- EXPERIENCE -->
-  <section>
-    <div class="section-header">
-      <div class="section-label">Experience</div>
-      <div class="section-right">
+      <!-- EXPERIENCE -->
+      <section id="experience">
         <div class="section-description">
           Professional experience building software products and leading teams.
         </div>
@@ -232,8 +258,52 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const navItems = document.querySelectorAll('.nav-item');
+    const content = document.querySelector('.content');
+    const sections = document.querySelectorAll('section');
+
+    // Click handler for navigation
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        const targetSection = document.getElementById(targetId);
+        
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Update active state
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // Update active nav on scroll
+    content.addEventListener('scroll', () => {
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const scrollPosition = content.scrollTop;
+        
+        if (scrollPosition >= sectionTop - 100) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.target === current) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
