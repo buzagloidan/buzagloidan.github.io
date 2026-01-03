@@ -48,6 +48,53 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      justify-content: space-between;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Contact bar at bottom of sidebar */
+    .contact-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .profile-photo {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      overflow: hidden;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .contact-bar a {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .contact-bar a:hover {
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .contact-bar .dot {
+      color: var(--text-muted);
+      font-size: 11px;
     }
 
     .nav-item {
@@ -162,12 +209,26 @@
   <div class="layout">
     <!-- Left sidebar with navigation -->
     <nav class="sidebar">
-      <button class="nav-item active" data-target="about">About</button>
-      <button class="nav-item" data-target="projects">Projects</button>
-      <button class="nav-item" data-target="writing">Writing</button>
-      <button class="nav-item" data-target="talks">Talks</button>
-      <button class="nav-item" data-target="experience">Experience</button>
-      <button class="nav-item" data-target="contact">Contact</button>
+      <div class="nav-links">
+        <button class="nav-item active" data-target="about">About</button>
+        <button class="nav-item" data-target="projects">Projects</button>
+        <button class="nav-item" data-target="writing">Writing</button>
+        <button class="nav-item" data-target="talks">Talks</button>
+        <button class="nav-item" data-target="experience">Experience</button>
+      </div>
+
+      <div class="contact-bar">
+        <div class="profile-photo">
+          <!-- Add your profile image here -->
+        </div>
+        <a href="mailto:okparaosi17@gmail.com">Email</a>
+        <span class="dot">&middot;</span>
+        <a href="#">LinkedIn</a>
+        <span class="dot">&middot;</span>
+        <a href="#">GitHub</a>
+        <span class="dot">&middot;</span>
+        <a href="#">X</a>
+      </div>
     </nav>
 
     <!-- Right scrollable content -->
@@ -280,39 +341,6 @@
             <div class="item-content">
               <div class="item-title">Junior Developer</div>
               <div class="item-subtitle">Full-stack web development</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONTACT -->
-      <section id="contact">
-        <div class="section-description">
-          Get in touch.
-        </div>
-        <div class="items">
-          <div class="item">
-            <div class="item-meta">Email</div>
-            <div class="item-content">
-              <div class="item-title"><a href="mailto:okparaosi17@gmail.com">okparaosi17@gmail.com</a></div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">LinkedIn</div>
-            <div class="item-content">
-              <div class="item-title"><a href="#">LinkedIn</a></div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">GitHub</div>
-            <div class="item-content">
-              <div class="item-title"><a href="#">GitHub</a></div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">X</div>
-            <div class="item-content">
-              <div class="item-title"><a href="#">X</a></div>
             </div>
           </div>
         </div>
