@@ -122,31 +122,29 @@
       color: var(--text-dark);
     }
 
-    /* Right content area - scrollable */
+    /* Right content area - no scrolling */
     .content {
-      overflow-y: auto;
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Hide scrollbar but keep functionality */
-    .content::-webkit-scrollbar {
-      display: none;
-    }
-    .content {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    /* Sections */
+    /* Sections - stacked with fade transitions */
     section {
-      min-height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      scroll-snap-align: start;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
-    /* Scroll snapping for section-by-section scrolling */
-    .content {
-      scroll-snap-type: y mandatory;
+    section.active {
+      opacity: 1;
+      visibility: visible;
     }
 
     .section-description {
@@ -242,7 +240,7 @@
     <!-- Right scrollable content -->
     <main class="content">
       <!-- ABOUT -->
-      <section id="about">
+      <section id="about" class="active">
         <div class="section-description">
           <strong>Osinachi Okpara</strong> is a software engineer focused on building products that are simple, fast, and delightful to use. Currently working on developer tools and open source projects.
         </div>
@@ -358,7 +356,6 @@
 
   <script>
     const navItems = document.querySelectorAll('.nav-item');
-    const content = document.querySelector('.content');
     const sections = document.querySelectorAll('section');
 
     // Create rounded favicon
@@ -389,116 +386,33 @@
     }
     createRoundedFavicon();
 
-    // Smooth scroll function using requestAnimationFrame for 60fps+ scrolling
-    function smoothScrollTo(element, duration = 600) {
-      const container = content;
-      const start = container.scrollTop;
-      const target = element.offsetTop;
-      const distance = target - start;
-      let startTime = null;
-
-      // Easing function for smooth deceleration
-      function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
-      }
-
-      function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = easeOutCubic(progress);
-        
-        container.scrollTop = start + (distance * easeProgress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animation);
-        }
-      }
-
-      requestAnimationFrame(animation);
-    }
-
-    // Get current section index
-    function getCurrentSectionIndex() {
-      const scrollPosition = content.scrollTop;
-      let currentIndex = 0;
-      
-      sections.forEach((section, index) => {
-        if (scrollPosition >= section.offsetTop - 100) {
-          currentIndex = index;
-        }
+    // Show section function
+    function showSection(targetId) {
+      // Hide all sections
+      sections.forEach(section => {
+        section.classList.remove('active');
       });
       
-      return currentIndex;
+      // Show target section
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+      
+      // Update nav active state
+      navItems.forEach(nav => {
+        nav.classList.remove('active');
+        if (nav.dataset.target === targetId) {
+          nav.classList.add('active');
+        }
+      });
     }
-
-    // Wheel handler for section-by-section scrolling
-    let isScrolling = false;
-    content.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      
-      if (isScrolling) return;
-      
-      isScrolling = true;
-      const currentIndex = getCurrentSectionIndex();
-      let targetIndex;
-      
-      if (e.deltaY > 0) {
-        // Scrolling down
-        targetIndex = Math.min(currentIndex + 1, sections.length - 1);
-      } else {
-        // Scrolling up
-        targetIndex = Math.max(currentIndex - 1, 0);
-      }
-      
-      if (targetIndex !== currentIndex) {
-        smoothScrollTo(sections[targetIndex]);
-        
-        // Update nav active state
-        navItems.forEach(nav => nav.classList.remove('active'));
-        navItems[targetIndex].classList.add('active');
-      }
-      
-      setTimeout(() => {
-        isScrolling = false;
-      }, 700);
-    }, { passive: false });
 
     // Click handler for navigation
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const targetId = item.dataset.target;
-        const targetSection = document.getElementById(targetId);
-        
-        if (targetSection) {
-          smoothScrollTo(targetSection);
-        }
-
-        // Update active state
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-      });
-    });
-
-    // Update active nav on scroll
-    content.addEventListener('scroll', () => {
-      let current = '';
-      
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const scrollPosition = content.scrollTop;
-        
-        if (scrollPosition >= sectionTop - 100) {
-          current = section.getAttribute('id');
-        }
-      });
-
-      navItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.target === current) {
-          item.classList.add('active');
-        }
+        showSection(targetId);
       });
     });
   </script>
