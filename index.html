@@ -6,7 +6,7 @@
   <title>Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -19,6 +19,7 @@
       --text-dark: #121212;
       --text-muted: #8b7355;
       --spacing: 40px;
+      --line-color: #c9b99a;
     }
 
     html {
@@ -45,7 +46,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: var(--spacing);
-      margin-bottom: auto;
     }
 
     .section-label {
@@ -55,46 +55,36 @@
       color: var(--text-muted);
     }
 
+    /* Right side content area (description column) */
+    .section-right {
+      display: flex;
+      flex-direction: column;
+    }
+
     .section-description {
       font-size: 14px;
       line-height: 1.7;
       color: var(--text-dark);
+      margin-bottom: 32px;
     }
 
-    /* Main content area - centered */
-    .section-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .section-description strong {
+      font-weight: 600;
     }
 
-    .section-content h2 {
-      font-size: 72px;
-      font-weight: 400;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-
-    .section-content p {
-      font-size: 14px;
-      max-width: 500px;
-      line-height: 1.8;
-    }
-
-    /* Items list */
+    /* Items list - now inside the right column */
     .items {
       display: flex;
       flex-direction: column;
-      gap: 40px;
-      margin-top: 60px;
+      gap: 0;
     }
 
     .item {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--spacing);
-      align-items: baseline;
+      gap: 24px;
+      align-items: start;
+      padding-top: 16px;
     }
 
     .item-meta {
@@ -102,12 +92,16 @@
       letter-spacing: 0.1em;
       color: var(--text-muted);
       text-transform: uppercase;
+      padding-top: 4px;
+      border-top: 1px solid var(--line-color);
     }
 
     .item-content {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      padding-top: 4px;
+      border-top: 1px solid var(--line-color);
     }
 
     .item-title {
@@ -118,17 +112,6 @@
     .item-subtitle {
       font-size: 13px;
       color: var(--text-muted);
-    }
-
-    /* Footer text at bottom */
-    .section-footer {
-      margin-top: auto;
-      padding-top: var(--spacing);
-    }
-
-    .section-footer p {
-      font-size: 14px;
-      line-height: 1.7;
     }
 
     /* Links */
@@ -147,14 +130,11 @@
   <section>
     <div class="section-header">
       <div class="section-label">About</div>
-      <div class="section-description"></div>
-    </div>
-    <div class="section-content">
-      <h2>Osinachi Nwachukwu</h2>
-      <p>
-        Software engineer focused on building products that are simple, fast, and delightful to use. 
-        Currently working on developer tools and open source projects.
-      </p>
+      <div class="section-right">
+        <div class="section-description">
+          <strong>Osinachi Okpara</strong> is a software engineer focused on building products that are simple, fast, and delightful to use. Currently working on developer tools and open source projects.
+        </div>
+      </div>
     </div>
   </section>
 
@@ -162,31 +142,31 @@
   <section>
     <div class="section-header">
       <div class="section-label">Writing</div>
-      <div class="section-description">
-        Thoughts on software engineering, developer experience, and building for the web.
-      </div>
-    </div>
-    <div class="section-content">
-      <div class="items">
-        <div class="item">
-          <div class="item-meta">2024</div>
-          <div class="item-content">
-            <div class="item-title"><a href="#">Building better developer experiences</a></div>
-            <div class="item-subtitle">Thoughts on creating tools developers love</div>
-          </div>
+      <div class="section-right">
+        <div class="section-description">
+          Thoughts on software engineering, developer experience, and building for the web.
         </div>
-        <div class="item">
-          <div class="item-meta">2024</div>
-          <div class="item-content">
-            <div class="item-title"><a href="#">The art of simplicity in software</a></div>
-            <div class="item-subtitle">Why less is often more in engineering</div>
+        <div class="items">
+          <div class="item">
+            <div class="item-meta">2024</div>
+            <div class="item-content">
+              <div class="item-title"><a href="#">Building better developer experiences</a></div>
+              <div class="item-subtitle">Thoughts on creating tools developers love</div>
+            </div>
           </div>
-        </div>
-        <div class="item">
-          <div class="item-meta">2023</div>
-          <div class="item-content">
-            <div class="item-title"><a href="#">Open source and community</a></div>
-            <div class="item-subtitle">Lessons from maintaining open source projects</div>
+          <div class="item">
+            <div class="item-meta">2024</div>
+            <div class="item-content">
+              <div class="item-title"><a href="#">The art of simplicity in software</a></div>
+              <div class="item-subtitle">Why less is often more in engineering</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">2023</div>
+            <div class="item-content">
+              <div class="item-title"><a href="#">Open source and community</a></div>
+              <div class="item-subtitle">Lessons from maintaining open source projects</div>
+            </div>
           </div>
         </div>
       </div>
@@ -197,24 +177,24 @@
   <section>
     <div class="section-header">
       <div class="section-label">Talks</div>
-      <div class="section-description">
-        Conference talks and presentations on modern web development.
-      </div>
-    </div>
-    <div class="section-content">
-      <div class="items">
-        <div class="item">
-          <div class="item-meta">ReactConf 2024</div>
-          <div class="item-content">
-            <div class="item-title"><a href="#">Modern React patterns</a></div>
-            <div class="item-subtitle">Best practices for scalable React applications</div>
-          </div>
+      <div class="section-right">
+        <div class="section-description">
+          Conference talks and presentations on modern web development.
         </div>
-        <div class="item">
-          <div class="item-meta">JSConf 2023</div>
-          <div class="item-content">
-            <div class="item-title"><a href="#">Performance at scale</a></div>
-            <div class="item-subtitle">Optimizing JavaScript for large applications</div>
+        <div class="items">
+          <div class="item">
+            <div class="item-meta">ReactConf 2024</div>
+            <div class="item-content">
+              <div class="item-title"><a href="#">Modern React patterns</a></div>
+              <div class="item-subtitle">Best practices for scalable React applications</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">JSConf 2023</div>
+            <div class="item-content">
+              <div class="item-title"><a href="#">Performance at scale</a></div>
+              <div class="item-subtitle">Optimizing JavaScript for large applications</div>
+            </div>
           </div>
         </div>
       </div>
@@ -225,31 +205,31 @@
   <section>
     <div class="section-header">
       <div class="section-label">Experience</div>
-      <div class="section-description">
-        Professional experience building software products and leading teams.
-      </div>
-    </div>
-    <div class="section-content">
-      <div class="items">
-        <div class="item">
-          <div class="item-meta">2022 - Present</div>
-          <div class="item-content">
-            <div class="item-title">Senior Software Engineer</div>
-            <div class="item-subtitle">Building developer tools and infrastructure</div>
-          </div>
+      <div class="section-right">
+        <div class="section-description">
+          Professional experience building software products and leading teams.
         </div>
-        <div class="item">
-          <div class="item-meta">2020 - 2022</div>
-          <div class="item-content">
-            <div class="item-title">Software Engineer</div>
-            <div class="item-subtitle">Frontend development and design systems</div>
+        <div class="items">
+          <div class="item">
+            <div class="item-meta">2022 - Present</div>
+            <div class="item-content">
+              <div class="item-title">Senior Software Engineer</div>
+              <div class="item-subtitle">Building developer tools and infrastructure</div>
+            </div>
           </div>
-        </div>
-        <div class="item">
-          <div class="item-meta">2018 - 2020</div>
-          <div class="item-content">
-            <div class="item-title">Junior Developer</div>
-            <div class="item-subtitle">Full-stack web development</div>
+          <div class="item">
+            <div class="item-meta">2020 - 2022</div>
+            <div class="item-content">
+              <div class="item-title">Software Engineer</div>
+              <div class="item-subtitle">Frontend development and design systems</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">2018 - 2020</div>
+            <div class="item-content">
+              <div class="item-title">Junior Developer</div>
+              <div class="item-subtitle">Full-stack web development</div>
+            </div>
           </div>
         </div>
       </div>
