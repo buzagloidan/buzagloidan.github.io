@@ -39,6 +39,25 @@
       overflow: hidden;
     }
 
+    /* Cursor follower circle */
+    .cursor-follower {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ffead3;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-follower.hovering {
+      width: 20px;
+      height: 20px;
+    }
+
     body {
       font-family: 'Geist Mono', monospace;
       background-color: var(--bg-light);
@@ -248,6 +267,7 @@
   </style>
 </head>
 <body>
+  <div class="cursor-follower" id="cursorFollower"></div>
   <div class="layout">
     <!-- Left sidebar with navigation -->
     <nav class="sidebar">
@@ -457,6 +477,42 @@
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
+    });
+
+    // Cursor follower with smooth trailing animation
+    const cursorFollower = document.getElementById('cursorFollower');
+    let mouseX = 0;
+    let mouseY = 0;
+    let followerX = 0;
+    let followerY = 0;
+    const ease = 0.15;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateFollower() {
+      // Smooth easing - follower trails behind cursor
+      followerX += (mouseX - followerX) * ease;
+      followerY += (mouseY - followerY) * ease;
+      
+      cursorFollower.style.left = followerX + 'px';
+      cursorFollower.style.top = followerY + 'px';
+      
+      requestAnimationFrame(animateFollower);
+    }
+    animateFollower();
+
+    // Add hover effect on interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorFollower.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorFollower.classList.remove('hovering');
+      });
     });
   </script>
 </body>
