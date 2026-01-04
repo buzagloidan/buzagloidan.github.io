@@ -37,6 +37,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
+      scroll-behavior: smooth;
     }
 
     /* Cursor follower circle */
@@ -148,6 +149,7 @@
       text-align: left;
       font-family: inherit;
       padding: 0;
+      width: fit-content;
     }
 
     .nav-item:hover {
@@ -177,6 +179,7 @@
       visibility: hidden;
       transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.8s ease-in-out, color 0.8s ease-in-out;
       overflow-y: auto;
+      scroll-behavior: smooth;
     }
 
     section.active {
@@ -265,6 +268,15 @@
       margin-top: 8px;
     }
 
+    .item-tags {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
     /* Dark mode toggle button */
     .theme-toggle {
       width: 12px;
@@ -283,6 +295,24 @@
       --text-dark: #ffead3;
       --text-muted: #a89880;
       --line-color: #3d3d3d;
+    }
+
+    /* Smooth scrollbar styling */
+    section::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    section::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    section::-webkit-scrollbar-thumb {
+      background: var(--line-color);
+      border-radius: 2px;
+    }
+
+    section::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
     }
 
     /* Links */
@@ -432,6 +462,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://sin4ch1.substack.com/p/llms-might-not-be-human-level-intelligent" target="_blank" rel="noopener">LLMs might not be human-level intelligent, but they sure are human</a></div>
               <div class="item-subtitle">Oct 1</div>
+              <div class="item-tags">AI · LLMS · OPINION</div>
             </div>
           </div>
           <div class="item">
@@ -439,6 +470,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/building-a-simple-exchange-rate-mcp-server-using-fastmcp-c87d7a454545" target="_blank" rel="noopener">Building a Simple Exchange Rate MCP Server using FastMCP</a></div>
               <div class="item-subtitle">Sep 29</div>
+              <div class="item-tags">AI · MCP · PYTHON · TUTORIAL</div>
             </div>
           </div>
           <div class="item">
@@ -446,6 +478,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://sin4ch1.substack.com/p/the-need-for-compromise-in-innovation" target="_blank" rel="noopener">The need for compromise in innovation communication in the age of AI</a></div>
               <div class="item-subtitle">Sep 11</div>
+              <div class="item-tags">AI · INNOVATION · OPINION</div>
             </div>
           </div>
           <div class="item">
@@ -453,6 +486,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://sin4ch1.substack.com/p/were-the-ones-holding-our-tech-back" target="_blank" rel="noopener">We might just be the ones holding our tech back</a></div>
               <div class="item-subtitle">Aug 27</div>
+              <div class="item-tags">TECH · OPINION</div>
             </div>
           </div>
           <div class="item">
@@ -460,6 +494,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/understanding-model-context-protocol-mcp-2f8f0e7e9240" target="_blank" rel="noopener">Understanding Model Context Protocol (MCP)</a></div>
               <div class="item-subtitle">Aug 6</div>
+              <div class="item-tags">AI · MCP · LLMS</div>
             </div>
           </div>
           <div class="item">
@@ -467,6 +502,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/deploying-a-fastapi-number-classification-api-with-docker-nginx-and-aws-ec2-fe2358ef7835" target="_blank" rel="noopener">Deploying a FastAPI Number Classification API with Docker, Nginx, and AWS EC2</a></div>
               <div class="item-subtitle">May 3</div>
+              <div class="item-tags">CLOUD · AWS · DEVOPS · DOCKER · TUTORIAL</div>
             </div>
           </div>
           <div class="item">
@@ -474,6 +510,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/why-tech-innovation-seems-slower-these-days-fe79b14d0f99" target="_blank" rel="noopener">Why Tech Innovation Seems Slower These Days</a></div>
               <div class="item-subtitle">Apr 18</div>
+              <div class="item-tags">TECH · INNOVATION · OPINION</div>
             </div>
           </div>
           <div class="item">
@@ -481,6 +518,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://www.everythingdevops.dev/blog/understanding-ssh-and-ssh-keys" target="_blank" rel="noopener">Understanding SSH and SSH Keys</a></div>
               <div class="item-subtitle">Feb 25</div>
+              <div class="item-tags">DEVOPS · LINUX · TUTORIAL</div>
             </div>
           </div>
           <div class="item">
@@ -488,6 +526,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/hng-stage-0-serving-a-simple-webpage-through-nginx-on-an-amazon-ec2-instance-c885225c3bd7" target="_blank" rel="noopener">Serving A Simple Webpage Through NGINX On An Amazon EC2 Instance</a></div>
               <div class="item-subtitle">Jan 31</div>
+              <div class="item-tags">CLOUD · AWS · NGINX · TUTORIAL</div>
             </div>
           </div>
           <div class="item">
@@ -495,6 +534,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/infrastructure-is-the-future-of-ai-72fd31dd7c03" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
               <div class="item-subtitle">Dec 7</div>
+              <div class="item-tags">AI · CLOUD · INFRASTRUCTURE</div>
             </div>
           </div>
           <div class="item">
@@ -502,6 +542,7 @@
             <div class="item-content">
               <div class="item-title"><a href="https://medium.com/@sin4ch/road-to-my-aws-community-builder-application-in-january-2025-f4626330076d" target="_blank" rel="noopener">Road to My AWS Community Builder Application</a></div>
               <div class="item-subtitle">Oct 20</div>
+              <div class="item-tags">AWS · CLOUD · CAREER</div>
             </div>
           </div>
         </div>
@@ -703,7 +744,7 @@
             <div class="item-meta">Oct 2025 - Present</div>
             <div class="item-content">
               <div class="item-title">Developer Advocate</div>
-              <div class="item-subtitle">Hackmamba</div>
+              <div class="item-subtitle">Hackmamba · San Francisco, CA, US</div>
             </div>
           </div>
           <div class="item">
