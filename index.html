@@ -63,6 +63,12 @@
       background-color: var(--bg-light);
       color: var(--text-dark);
       line-height: 1.6;
+      transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
+    }
+
+    /* Transition for all elements using theme colors */
+    *, *::before, *::after {
+      transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out, border-color 0.8s ease-in-out;
     }
 
     /* Main layout: fixed left sidebar + scrollable right content */
@@ -169,7 +175,8 @@
       flex-direction: column;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.8s ease-in-out, color 0.8s ease-in-out;
+      overflow-y: auto;
     }
 
     section.active {
@@ -197,7 +204,7 @@
 
     .item {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 2fr;
       gap: 24px;
       align-items: start;
       padding-top: 16px;
@@ -210,6 +217,10 @@
       text-transform: uppercase;
       padding-top: 4px;
       border-top: 1px solid var(--line-color);
+    }
+
+    .item-meta:empty {
+      border-top: none;
     }
 
     .item-content {
@@ -269,8 +280,9 @@
       <div class="nav-links">
         <button class="nav-item active" data-target="about">About</button>
         <button class="nav-item" data-target="projects">Projects</button>
+        <button class="nav-item" data-target="opensource">Open Source</button>
         <button class="nav-item" data-target="writing">Writing</button>
-        <button class="nav-item" data-target="talks">Talks</button>
+        <button class="nav-item" data-target="talks">Speaking & Hosting</button>
         <button class="nav-item" data-target="experience">Experience</button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
       </div>
@@ -279,13 +291,13 @@
         <div class="profile-photo">
           <img src="output_3.png" alt="Osinachi Okpara">
         </div>
-        <a href="mailto:okparaosi17@gmail.com">okparaosi17@gmail.com</a>
+        <a href="mailto:okparaosi17@gmail.com">Email</a>
         <span class="dot">&middot;</span>
-        <a href="#">LinkedIn</a>
+        <a href="https://linkedin.com/in/osinachiokpara" target="_blank" rel="noopener">LinkedIn</a>
         <span class="dot">&middot;</span>
-        <a href="#">GitHub</a>
+        <a href="https://github.com/sin4ch" target="_blank" rel="noopener">GitHub</a>
         <span class="dot">&middot;</span>
-        <a href="#">X</a>
+        <a href="https://x.com/sin4ch" target="_blank" rel="noopener">X</a>
       </div>
     </nav>
 
@@ -294,28 +306,87 @@
       <!-- ABOUT -->
       <section id="about" class="active">
         <div class="section-description">
-          <strong>Osinachi Okpara</strong> is a software engineer focused on building products that are simple, fast, and delightful to use. Currently working on developer tools and open source projects.
+          <strong>Osinachi Okpara</strong> is a Developer Advocate and Community Architect with 2+ years of experience building technical communities, creating developer education, and driving product adoption for cloud-native and AI technologies. Currently leading technical programs at NexaScale and contributing to open source projects at YC-backed startups.
         </div>
       </section>
 
       <!-- PROJECTS -->
       <section id="projects">
         <div class="section-description">
-          Selected projects and open source work.
+          Selected projects.
         </div>
         <div class="items">
           <div class="item">
-            <div class="item-meta">2024</div>
+            <div class="item-meta">2025</div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Project One</a></div>
-              <div class="item-subtitle">Description of the project</div>
+              <div class="item-title"><a href="https://github.com/sin4ch/mono-mcp" target="_blank" rel="noopener">Mono Banking MCP Server</a></div>
+              <div class="item-subtitle">MCP server for Nigerian banking operations via Mono Open Banking API. 53 Stars, 11 Forks</div>
+              <div class="item-subtitle">Python, FastMCP, PostgreSQL, Claude</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">2023</div>
+            <div class="item-meta"></div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Project Two</a></div>
-              <div class="item-subtitle">Description of the project</div>
+              <div class="item-title"><a href="https://github.com/sin4ch/qgjob" target="_blank" rel="noopener">QualGent Job Orchestrator</a></div>
+              <div class="item-subtitle">Production-ready job orchestration system for AppWright automated tests on BrowserStack</div>
+              <div class="item-subtitle">Python, Click, FastAPI, Redis, PostgreSQL, Docker, GitHub Actions</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/sin4ch/aws-innovation-sb-api" target="_blank" rel="noopener">AWS Innovation Sandbox API</a></div>
+              <div class="item-subtitle">FastAPI application for managing AWS Innovation Sandbox accounts and resources</div>
+              <div class="item-subtitle">Python, FastAPI, Boto3, AWS STS, httpx</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/sin4ch/quick-face-sort" target="_blank" rel="noopener">Quick Face Sort</a></div>
+              <div class="item-subtitle">Scan a folder with media and sort out images & videos based on reference images</div>
+              <div class="item-subtitle">Python, HCL, Terraform</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/sin4ch/resume-to-latex" target="_blank" rel="noopener">Resume to LaTeX</a></div>
+              <div class="item-subtitle">Convert resumes to clean LaTeX format using AI</div>
+              <div class="item-subtitle">JavaScript</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- OPEN SOURCE -->
+      <section id="opensource">
+        <div class="section-description">
+          Contributions to open source projects.
+        </div>
+        <div class="items">
+          <div class="item">
+            <div class="item-meta">YC W25</div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/browser-use/browser-use/pull/2998" target="_blank" rel="noopener">Browser Use</a></div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/truffle-ai/dexto/pull/311" target="_blank" rel="noopener">Dexto by Truffle AI</a></div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">YC W21</div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/sst/opencode/pull/2707" target="_blank" rel="noopener">OpenCode by SST</a></div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">AWS</div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/aws-solutions/innovation-sandbox-on-aws/issues/19" target="_blank" rel="noopener">Innovation Sandbox</a></div>
             </div>
           </div>
         </div>
@@ -324,51 +395,111 @@
       <!-- WRITING -->
       <section id="writing">
         <div class="section-description">
-          Thoughts on software engineering, developer experience, and building for the web.
+          Articles on cloud infrastructure, DevOps, and AI agents.
         </div>
         <div class="items">
           <div class="item">
-            <div class="item-meta">2024</div>
+            <div class="item-meta">2025</div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Building better developer experiences</a></div>
-              <div class="item-subtitle">Thoughts on creating tools developers love</div>
+              <div class="item-title"><a href="https://sin4ch1.substack.com/p/llms-might-not-be-human-level-intelligent" target="_blank" rel="noopener">LLMs might not be human-level intelligent, but they sure are human</a></div>
+              <div class="item-subtitle">Oct 1</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://medium.com/@sin4ch/building-a-simple-exchange-rate-mcp-server-using-fastmcp-c87d7a454545" target="_blank" rel="noopener">Building a Simple Exchange Rate MCP Server using FastMCP</a></div>
+              <div class="item-subtitle">Sep 29</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://sin4ch1.substack.com/p/the-need-for-compromise-in-innovation" target="_blank" rel="noopener">The need for compromise in innovation communication in the age of AI</a></div>
+              <div class="item-subtitle">Sep 11</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://sin4ch1.substack.com/p/were-the-ones-holding-our-tech-back" target="_blank" rel="noopener">We might just be the ones holding our tech back</a></div>
+              <div class="item-subtitle">Aug 27</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://medium.com/@sin4ch/understanding-model-context-protocol-mcp-2f8f0e7e9240" target="_blank" rel="noopener">Understanding Model Context Protocol (MCP)</a></div>
+              <div class="item-subtitle">Aug 6</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://medium.com/@sin4ch/deploying-a-fastapi-number-classification-api-with-docker-nginx-and-aws-ec2-fe2358ef7835" target="_blank" rel="noopener">Deploying a FastAPI Number Classification API with Docker, Nginx, and AWS EC2</a></div>
+              <div class="item-subtitle">May 3</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://medium.com/@sin4ch/why-tech-innovation-seems-slower-these-days-fe79b14d0f99" target="_blank" rel="noopener">Why Tech Innovation Seems Slower These Days</a></div>
+              <div class="item-subtitle">Apr 18</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://www.everythingdevops.dev/blog/understanding-ssh-and-ssh-keys" target="_blank" rel="noopener">Understanding SSH and SSH Keys</a></div>
+              <div class="item-subtitle">Feb 25</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://medium.com/@sin4ch/hng-stage-0-serving-a-simple-webpage-through-nginx-on-an-amazon-ec2-instance-c885225c3bd7" target="_blank" rel="noopener">Serving A Simple Webpage Through NGINX On An Amazon EC2 Instance</a></div>
+              <div class="item-subtitle">Jan 31</div>
             </div>
           </div>
           <div class="item">
             <div class="item-meta">2024</div>
             <div class="item-content">
-              <div class="item-title"><a href="#">The art of simplicity in software</a></div>
-              <div class="item-subtitle">Why less is often more in engineering</div>
+              <div class="item-title"><a href="https://medium.com/@sin4ch/infrastructure-is-the-future-of-ai-72fd31dd7c03" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
+              <div class="item-subtitle">Dec 7</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">2023</div>
+            <div class="item-meta"></div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Open source and community</a></div>
-              <div class="item-subtitle">Lessons from maintaining open source projects</div>
+              <div class="item-title"><a href="https://medium.com/@sin4ch/road-to-my-aws-community-builder-application-in-january-2025-f4626330076d" target="_blank" rel="noopener">Road to My AWS Community Builder Application</a></div>
+              <div class="item-subtitle">Oct 20</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- TALKS -->
+      <!-- TALKS & HOSTING -->
       <section id="talks">
         <div class="section-description">
-          Conference talks and presentations on modern web development.
+          Speaking and hosting engagements at industry events and conferences.
         </div>
         <div class="items">
           <div class="item">
-            <div class="item-meta">ReactConf 2024</div>
+            <div class="item-meta">2024</div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Modern React patterns</a></div>
-              <div class="item-subtitle">Best practices for scalable React applications</div>
+              <div class="item-title">AWS Community Day West Africa</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">JSConf 2023</div>
+            <div class="item-meta"></div>
             <div class="item-content">
-              <div class="item-title"><a href="#">Performance at scale</a></div>
-              <div class="item-subtitle">Optimizing JavaScript for large applications</div>
+              <div class="item-title">Google DevFest</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title">Google Build with AI</div>
             </div>
           </div>
         </div>
@@ -377,28 +508,35 @@
       <!-- EXPERIENCE -->
       <section id="experience">
         <div class="section-description">
-          Professional experience building software products and leading teams.
+          Professional experience in developer advocacy, community building, and DevOps.
         </div>
         <div class="items">
           <div class="item">
-            <div class="item-meta">2022 - Present</div>
+            <div class="item-meta">Jan 2024 - Present</div>
             <div class="item-content">
-              <div class="item-title">Senior Software Engineer</div>
-              <div class="item-subtitle">Building developer tools and infrastructure</div>
+              <div class="item-title">Developer Advocate & Technical Programs Lead</div>
+              <div class="item-subtitle">NexaScale · Washington, DC, US (Remote)</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">2020 - 2022</div>
+            <div class="item-meta">Jan 2025 - Feb 2025</div>
             <div class="item-content">
-              <div class="item-title">Software Engineer</div>
-              <div class="item-subtitle">Frontend development and design systems</div>
+              <div class="item-title">Developer Advocate</div>
+              <div class="item-subtitle">Learn To Cloud · New York, US (Remote)</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">2018 - 2020</div>
+            <div class="item-meta">2024 - Present</div>
             <div class="item-content">
-              <div class="item-title">Junior Developer</div>
-              <div class="item-subtitle">Full-stack web development</div>
+              <div class="item-title">Founder & Community Architect</div>
+              <div class="item-subtitle">The Cloud Crowd & DevOps Conclave · Lagos, NG (Remote)</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta">Jun 2024 - Jul 2024</div>
+            <div class="item-content">
+              <div class="item-title">DevOps Engineer Intern</div>
+              <div class="item-subtitle">Hotels.ng · Lagos, NG (Remote)</div>
             </div>
           </div>
         </div>
