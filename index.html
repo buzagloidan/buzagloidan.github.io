@@ -23,6 +23,17 @@
       --line-color: #c9b99a;
     }
 
+    /* Selection/highlight colors */
+    ::selection {
+      background-color: var(--text-dark);
+      color: var(--bg-light);
+    }
+
+    ::-moz-selection {
+      background-color: var(--text-dark);
+      color: var(--bg-light);
+    }
+
     html, body {
       height: 100%;
       overflow: hidden;
