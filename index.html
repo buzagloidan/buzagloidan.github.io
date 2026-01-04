@@ -200,6 +200,31 @@
       color: var(--text-muted);
     }
 
+    /* Dark mode toggle button */
+    .theme-toggle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background-color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      margin-top: 16px;
+    }
+
+    .theme-toggle:hover {
+      background-color: transparent;
+      border: 1px solid var(--text-dark);
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      --bg-light: #121212;
+      --text-dark: #ffead3;
+      --text-muted: #a89880;
+      --line-color: #3d3d3d;
+    }
+
     /* Links */
     a {
       color: var(--text-dark);
@@ -221,6 +246,7 @@
         <button class="nav-item" data-target="writing">Writing</button>
         <button class="nav-item" data-target="talks">Talks</button>
         <button class="nav-item" data-target="experience">Experience</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
       </div>
 
       <div class="contact-bar">
@@ -414,6 +440,12 @@
         const targetId = item.dataset.target;
         showSection(targetId);
       });
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
     });
   </script>
 </body>
