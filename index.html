@@ -37,26 +37,6 @@
     html, body {
       height: 100%;
       overflow: hidden;
-      cursor: none;
-    }
-
-    /* Custom cursor */
-    .cursor {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--text-dark);
-      border: 1px solid transparent;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out;
-      transform: translate(-50%, -50%);
-    }
-
-    .cursor.hovering {
-      background-color: transparent;
-      border: 1px solid var(--text-dark);
     }
 
     body {
@@ -268,7 +248,6 @@
   </style>
 </head>
 <body>
-  <div class="cursor" id="cursor"></div>
   <div class="layout">
     <!-- Left sidebar with navigation -->
     <nav class="sidebar">
@@ -478,25 +457,6 @@
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
-    });
-
-    // Custom cursor
-    const cursor = document.getElementById('cursor');
-    
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
-
-    // Add hover effect on interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('hovering');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hovering');
-      });
     });
   </script>
 </body>
