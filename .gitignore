@@ -1,6 +1,18 @@
 # Scraper script (local tool, not part of portfolio)
 scraper.py
+main.py
 
-# Output images (except profile photo)
+# Python environment
+.venv/
+.python-version
+pyproject.toml
+uv.lock
+
+# Output/debug files
 output_1.png
 output_2.png
+notion_debug.png
+notion_links.json
+
+# Empty README
+README.md
