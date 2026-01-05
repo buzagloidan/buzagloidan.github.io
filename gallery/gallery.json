@@ -1,5 +1,27 @@
 {
   "album": "Google Photos Gallery",
   "updated": "2025-01-05T00:00:00Z",
-  "images": []
+  "images": [
+    {
+      "id": "001",
+      "filename": "img-001.jpg",
+      "url": "gallery/img-001.jpg",
+      "title": "Profile Photo",
+      "caption": "Profile picture for portfolio"
+    },
+    {
+      "id": "002",
+      "filename": "img-002.jpg",
+      "url": "gallery/img-002.jpg",
+      "title": "Social Preview",
+      "caption": "Social media preview image"
+    },
+    {
+      "id": "003",
+      "filename": "img-003.jpg",
+      "url": "gallery/img-003.jpg",
+      "title": "Social Preview",
+      "caption": "Social media preview duplicate"
+    }
+  ]
 }
