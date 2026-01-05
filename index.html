@@ -360,6 +360,109 @@
     a:hover {
       text-decoration: underline;
     }
+
+    /* About carousel in sidebar */
+    .about-carousel {
+      width: 100%;
+      height: 140px;
+      overflow: hidden;
+      position: relative;
+      margin: var(--spacing) 0;
+      border-top: 1px solid var(--line-color);
+      padding-top: var(--spacing);
+    }
+
+    .about-carousel-track {
+      display: flex;
+      width: max-content;
+      height: 100%;
+      animation: scroll-left 60s linear infinite;
+    }
+
+    .about-carousel-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .about-carousel img {
+      height: 100%;
+      width: auto;
+      flex-shrink: 0;
+      margin: 0 12px;
+      object-fit: contain;
+    }
+
+    .about-carousel.loading,
+    .about-carousel .error {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      min-height: 140px;
+    }
+
+    /* Bento grid for gallery */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-auto-rows: minmax(200px, auto);
+      gap: 16px;
+      max-width: 800px;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      aspect-ratio: 1/1;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-item.span-2x2 {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: 2/1;
+    }
+
+    .gallery-item.span-2x1 {
+      grid-column: span 2;
+      grid-row: span 1;
+      aspect-ratio: 2/1;
+    }
+
+    .gallery-item.span-1x2 {
+      grid-column: span 1;
+      grid-row: span 2;
+      aspect-ratio: 1/2;
+    }
+
+    @media (max-width: 600px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-item.span-2x2,
+      .gallery-item.span-2x1,
+      .gallery-item.span-1x2 {
+        grid-column: span 1;
+        grid-row: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -373,6 +476,7 @@
         <button class="nav-item" data-target="opensource">Open Source</button>
         <button class="nav-item" data-target="writing">Writing</button>
         <button class="nav-item" data-target="talks">Speaking & Hosting</button>
+        <button class="nav-item" data-target="gallery">Gallery</button>
         <button class="nav-item" data-target="experience">Experience</button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
       </div>
@@ -394,10 +498,11 @@
     <!-- Right scrollable content -->
     <main class="content">
       <!-- ABOUT -->
-      <section id="about" class="active">
+       <section id="about" class="active">
         <div class="section-description">
           <strong>Osinachi Okpara</strong> is a Developer Advocate and Community Architect with 2+ years of experience building technical communities, creating developer education, and driving product adoption for cloud-native and AI technologies. Currently leading technical programs at NexaScale and contributing to open source projects at YC-backed startups.
         </div>
+        <div class="about-carousel" id="about-carousel"></div>
       </section>
 
       <!-- PROJECTS -->
@@ -810,9 +915,19 @@
           </div>
         </div>
       </section>
-
-      <!-- EXPERIENCE -->
-      <section id="experience">
+       
+       <!-- GALLERY -->
+       <section id="gallery">
+         <div class="section-description">
+           Personal gallery.
+         </div>
+         <div class="bento-grid" id="gallery-grid">
+           <div class="loading">Loading gallery...</div>
+         </div>
+       </section>
+ 
+       <!-- EXPERIENCE -->
+       <section id="experience">
         <div class="section-description">
           Professional experience in developer advocacy, community building, and DevOps.
         </div>
@@ -909,7 +1024,88 @@
           nav.classList.add('active');
         }
       });
+      
+      // Load carousel when ABOUT is shown
+      if (targetId === 'about') {
+        loadAboutCarousel();
+      } else {
+        const aboutCarousel = document.getElementById('about-carousel');
+        if (aboutCarousel) aboutCarousel.innerHTML = '';
+      }
+      
+      // Load bento grid when GALLERY is shown
+      if (targetId === 'gallery') {
+        loadGalleryGrid();
+      }
     }
+    
+    // Load gallery from S3
+    const GALLERY_JSON_URL = 'https://osinachi-portfolio-gallery.s3-website-us-east-1.amazonaws.com/gallery/gallery.json';
+    
+    async function loadAboutCarousel() {
+      const aboutCarousel = document.getElementById('about-carousel');
+      if (!aboutCarousel) return;
+      
+      aboutCarousel.innerHTML = '<div class="loading">Loading photos...</div>';
+      
+      try {
+        const response = await fetch(GALLERY_JSON_URL);
+        const data = await response.json();
+        
+        if (data.images && data.images.length > 0) {
+          const track = document.createElement('div');
+          track.className = 'about-carousel-track';
+          
+          data.images.forEach(img => {
+            const imgEl = document.createElement('img');
+            imgEl.src = img.url;
+            imgEl.alt = img.title || 'Gallery photo';
+            imgEl.loading = 'lazy';
+            track.appendChild(imgEl);
+          });
+          
+          aboutCarousel.innerHTML = '';
+          aboutCarousel.appendChild(track);
+        } else {
+          aboutCarousel.innerHTML = '<div class="error">No photos in gallery</div>';
+        }
+      } catch (error) {
+        aboutCarousel.innerHTML = '<div class="error">Failed to load photos</div>';
+      }
+    }
+    
+    async function loadGalleryGrid() {
+      const galleryGrid = document.getElementById('gallery-grid');
+      if (!galleryGrid) return;
+      
+      galleryGrid.innerHTML = '<div class="loading">Loading gallery...</div>';
+      
+      try {
+        const response = await fetch(GALLERY_JSON_URL);
+        const data = await response.json();
+        
+        if (data.images && data.images.length > 0) {
+          data.images.forEach((img, index) => {
+            const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
+            
+            const itemEl = document.createElement('div');
+            itemEl.className = `gallery-item ${spanClass}`;
+            itemEl.innerHTML = `<img src="${img.url}" alt="${img.title || 'Gallery photo'}" loading="lazy">`;
+            
+            itemEl.addEventListener('click', () => {
+              window.open(img.url, '_blank');
+            });
+            
+            galleryGrid.appendChild(itemEl);
+          });
+        } else {
+          galleryGrid.innerHTML = '<div class="error">No photos in gallery</div>';
+        }
+      } catch (error) {
+        galleryGrid.innerHTML = '<div class="error">Failed to load gallery</div>';
+      }
+    }
+
 
     // Click handler for navigation
     navItems.forEach(item => {
