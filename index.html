@@ -43,7 +43,7 @@
    <link rel="apple-touch-icon" href="profile-picture.png">
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -244,6 +244,55 @@
 
     .section-description strong {
       font-weight: 600;
+    }
+
+    /* About intro with rotating text */
+    .about-intro {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .about-greeting {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .about-static {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-dark);
+    }
+
+    .about-rotating {
+      display: flex;
+      align-items: center;
+      min-height: 2em;
+      overflow: visible;
+    }
+
+    .typewriter-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 48px;
+      font-weight: 400;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .typewriter-cursor {
+      font-family: 'Instrument Serif', serif;
+      font-size: 48px;
+      font-weight: 400;
+      color: var(--text-dark);
+      animation: blink 0.7s infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
     }
 
     .made-with-love {
@@ -765,8 +814,12 @@
     <main class="content">
       <!-- ABOUT -->
        <section id="about" class="active">
-        <div class="section-description">
-          <strong>Osinachi Okpara</strong> is a Developer Advocate and Community Architect with 2+ years of experience building technical communities, creating developer education, and driving product adoption for cloud-native and AI technologies. Currently leading technical programs at NexaScale and contributing to open source projects at YC-backed startups.
+        <div class="section-description about-intro">
+          <div class="about-greeting">Hi, I'm <strong>Osinachi</strong>!</div>
+          <div class="about-static">I am a software engineer and developer advocate that loves</div>
+          <div class="about-rotating">
+            <span class="typewriter-text" id="typewriter-text"></span><span class="typewriter-cursor">|</span>
+          </div>
         </div>
       </section>
 
@@ -1740,6 +1793,68 @@
         cursorFollower.classList.remove('hovering');
       });
     });
+
+    // Typewriter effect for About section
+    const typewriterWords = ['Writing', 'MCP', 'Agents', 'LLMs', 'AI', 'Open Source', 'Python'];
+    const typewriterText = document.getElementById('typewriter-text');
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let isPaused = false;
+    
+    const typingSpeed = 150;      // Speed of typing each character (slower)
+    const deletingSpeed = 100;    // Speed of deleting each character (slower)
+    const pauseAfterWord = 2500;  // Pause after typing complete word (longer)
+    const pauseBeforeDelete = 800; // Brief pause before starting to delete
+    
+    function typeWriter() {
+      const currentWord = typewriterWords[wordIndex];
+      
+      if (isPaused) {
+        return;
+      }
+      
+      if (!isDeleting) {
+        // Typing
+        typewriterText.textContent = currentWord.substring(0, charIndex + 1);
+        charIndex++;
+        
+        if (charIndex === currentWord.length) {
+          // Finished typing, pause then start deleting
+          isPaused = true;
+          setTimeout(() => {
+            isPaused = false;
+            isDeleting = true;
+            typeWriter();
+          }, pauseAfterWord);
+          return;
+        }
+      } else {
+        // Deleting
+        typewriterText.textContent = currentWord.substring(0, charIndex - 1);
+        charIndex--;
+        
+        if (charIndex === 0) {
+          // Finished deleting, move to next word
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % typewriterWords.length;
+          
+          // Brief pause before typing next word
+          isPaused = true;
+          setTimeout(() => {
+            isPaused = false;
+            typeWriter();
+          }, pauseBeforeDelete);
+          return;
+        }
+      }
+      
+      const speed = isDeleting ? deletingSpeed : typingSpeed;
+      setTimeout(typeWriter, speed);
+    }
+    
+    // Start typewriter effect
+    typeWriter();
   </script>
 </body>
 </html>
