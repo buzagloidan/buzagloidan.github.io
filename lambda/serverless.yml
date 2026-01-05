@@ -1,0 +1,44 @@
+service: osinachi-portfolio-gallery-lambda
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  memorySize: 256
+  timeout: 15
+
+functions:
+  galleryHandler:
+    handler: index.handler
+    name: osinachi-portfolio-gallery-handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: get
+          cors: true
+    environment:
+      BUCKET_NAME: osinachi-portfolio-gallery
+      GALLERY_JSON_KEY: gallery.json
+
+plugins:
+  - serverless-iam-roles-per-function
+
+resources:
+  Resources:
+    GalleryBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: osinachi-portfolio-gallery
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+        CORSConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+              MaxAgeSeconds: 3600
