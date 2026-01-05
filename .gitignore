@@ -1,0 +1,6 @@
+# Scraper script (local tool, not part of portfolio)
+scraper.py
+
+# Output images (except profile photo)
+output_1.png
+output_2.png
