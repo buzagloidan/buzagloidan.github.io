@@ -81,12 +81,12 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: #ffead3;
+      background-color: #ffffff;
       position: fixed;
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+      transition: width 0.3s ease-in-out, height 0.3s ease-in-out, background-color 0s;
       mix-blend-mode: difference;
     }
 
@@ -418,9 +418,14 @@
       height: 200px;
       overflow: hidden;
       z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .photo-carousel-wrapper.visible {
       opacity: 1;
       visibility: visible;
-      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
     .photo-carousel-wrapper.hidden {
@@ -582,8 +587,8 @@
     .lightbox-next {
       position: absolute;
       background: none;
-      border: 1px solid var(--bg-light);
-      color: var(--bg-light);
+      border: 1px solid #ffead3;
+      color: #ffead3;
       font-size: 16px;
       width: 40px;
       height: 40px;
@@ -592,15 +597,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background-color 0.2s ease, color 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0s, color 0s;
       font-family: 'Geist Mono', monospace;
     }
 
     .lightbox-close:hover,
     .lightbox-prev:hover,
     .lightbox-next:hover {
-      background-color: var(--bg-light);
-      color: var(--text-dark);
+      background-color: #ffead3;
+      color: #121212;
     }
 
     .lightbox-close {
@@ -628,7 +633,7 @@
       bottom: var(--spacing);
       left: 50%;
       transform: translateX(-50%);
-      color: var(--bg-light);
+      color: #ffead3;
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -656,10 +661,58 @@
         right: 10px;
       }
     }
+
+    /* Loading Screen Styles */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #121212;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .loading-screen.hidden {
+      transform: translateY(-100%);
+    }
+
+    .loading-content {
+      text-align: center;
+      color: #ffead3;
+      font-family: 'Geist Mono', monospace;
+    }
+
+    .loading-percentage {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+    }
+
+    /* Main wrapper for swipe animation */
+    .main-wrapper {
+      transform: translateY(100vh);
+      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .main-wrapper.visible {
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
-  <!-- Lightbox / Image Viewer -->
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-content">
+      <div class="loading-percentage" id="loading-percentage">0%</div>
+    </div>
+  </div>
+
+  <!-- Lightbox / Image Viewer (outside main-wrapper for proper fixed positioning) -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&#x2715;</button>
     <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&#x2039;</button>
@@ -671,7 +724,15 @@
   </div>
 
   <div class="cursor-follower" id="cursorFollower"></div>
-  <div class="made-with-love visible">Made with 🧡</div>
+  <div class="made-with-love" id="made-with-love">Made with 🧡</div>
+
+  <!-- Photo carousel - fixed position, outside main-wrapper -->
+  <div class="photo-carousel-wrapper" id="carousel-wrapper">
+    <div class="photo-carousel" id="photo-carousel"></div>
+  </div>
+
+  <!-- Main Content Wrapper (for swipe animation) -->
+  <div class="main-wrapper" id="main-wrapper">
   <div class="layout">
     <!-- Left sidebar with navigation -->
     <nav class="sidebar">
@@ -684,11 +745,6 @@
         <button class="nav-item" data-target="gallery">Gallery</button>
         <button class="nav-item" data-target="experience">Experience</button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
-      </div>
-
-      <!-- Photo carousel - full bleed -->
-      <div class="photo-carousel-wrapper" id="carousel-wrapper">
-        <div class="photo-carousel" id="photo-carousel"></div>
       </div>
 
       <div class="contact-bar">
@@ -1226,8 +1282,140 @@
       </section>
     </main>
   </div>
+  </div> <!-- End main-wrapper -->
 
   <script>
+    // Loading Screen Logic
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingPercentage = document.getElementById('loading-percentage');
+    const mainWrapper = document.getElementById('main-wrapper');
+    
+    let loadingComplete = false;
+    let totalBytes = 0;
+    let loadedBytes = 0;
+    
+    // Update the percentage display
+    function updateProgress() {
+      const percent = totalBytes > 0 ? Math.round((loadedBytes / totalBytes) * 100) : 0;
+      loadingPercentage.textContent = percent + '%';
+    }
+    
+    // Fetch with progress tracking
+    async function fetchWithProgress(url) {
+      try {
+        const response = await fetch(url);
+        const contentLength = response.headers.get('content-length');
+        
+        if (!contentLength) {
+          // If no content-length header, just load it normally
+          const blob = await response.blob();
+          loadedBytes += blob.size;
+          updateProgress();
+          return blob;
+        }
+        
+        const total = parseInt(contentLength, 10);
+        const reader = response.body.getReader();
+        let received = 0;
+        const chunks = [];
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          chunks.push(value);
+          received += value.length;
+          loadedBytes += value.length;
+          updateProgress();
+        }
+        
+        return new Blob(chunks);
+      } catch (e) {
+        // On error, still count as loaded to not block
+        return null;
+      }
+    }
+    
+    // Get file sizes first, then download with progress
+    async function preloadAssets() {
+      // Get gallery images from JSON
+      let galleryImageUrls = [];
+      try {
+        const response = await fetch('gallery/gallery.json');
+        const data = await response.json();
+        if (data.images && data.images.length > 0) {
+          galleryImageUrls = data.images.map(img => img.url);
+        }
+      } catch (e) {
+        console.log('Could not load gallery JSON');
+      }
+      
+      // Add other important images
+      const otherImages = ['profile-picture.png'];
+      const allAssetUrls = [...galleryImageUrls, ...otherImages];
+      
+      if (allAssetUrls.length === 0) {
+        completeLoading();
+        return;
+      }
+      
+      // First, get total size of all assets using HEAD requests
+      const sizePromises = allAssetUrls.map(async (url) => {
+        try {
+          const response = await fetch(url, { method: 'HEAD' });
+          const contentLength = response.headers.get('content-length');
+          return contentLength ? parseInt(contentLength, 10) : 50000; // estimate 50KB if unknown
+        } catch (e) {
+          return 50000; // estimate on error
+        }
+      });
+      
+      const sizes = await Promise.all(sizePromises);
+      totalBytes = sizes.reduce((a, b) => a + b, 0);
+      
+      // Now download all assets with progress tracking
+      const downloadPromises = allAssetUrls.map(url => fetchWithProgress(url));
+      await Promise.all(downloadPromises);
+      
+      completeLoading();
+    }
+    
+    function completeLoading() {
+      loadingComplete = true;
+      loadingPercentage.textContent = '100%';
+      
+      // Brief pause at 100%, then transition to content
+      setTimeout(() => {
+        // Animate loading screen up and main content up
+        loadingScreen.classList.add('hidden');
+        mainWrapper.classList.add('visible');
+        
+        // Show carousel wrapper and made-with-love
+        const carouselWrapper = document.getElementById('carousel-wrapper');
+        const madeWithLove = document.getElementById('made-with-love');
+        if (carouselWrapper) {
+          carouselWrapper.classList.add('visible');
+        }
+        if (madeWithLove) {
+          madeWithLove.classList.add('visible');
+        }
+        
+        // Position and load carousel after transition completes
+        setTimeout(() => {
+          positionCarousel();
+          loadPhotoCarousel();
+        }, 850);
+        
+        // Remove loading screen from DOM after animation
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 800);
+      }, 300);
+    }
+    
+    // Start preloading
+    preloadAssets();
+
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('section');
 
@@ -1371,12 +1559,6 @@
       }
     }
     
-    // Initialize carousel on page load
-    window.addEventListener('load', () => {
-      positionCarousel();
-      loadPhotoCarousel();
-    });
-    
     // Reposition on resize
     window.addEventListener('resize', positionCarousel);
     
@@ -1423,10 +1605,23 @@
       });
     });
 
-    // Theme toggle
+    // Theme toggle with localStorage persistence
     const themeToggle = document.getElementById('themeToggle');
+    
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
+      // Save preference
+      if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+      } else {
+        localStorage.setItem('theme', 'light');
+      }
     });
 
     // Cursor follower with smooth trailing animation
