@@ -108,21 +108,39 @@
       transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out, border-color 0.8s ease-in-out;
     }
 
-    /* Main layout: fixed left sidebar + scrollable right content */
+    /* Main layout: fixed 4-column grid for smooth transitions */
     .layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       height: 100vh;
       padding: var(--spacing);
       gap: var(--spacing);
     }
 
-    /* Left sidebar - fixed navigation */
+    /* Default: sidebar takes 2 columns, content takes 2 columns */
     .sidebar {
+      grid-column: 1 / 3;
       display: flex;
       flex-direction: column;
       gap: 12px;
       justify-content: space-between;
+      transition: grid-column 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .content {
+      grid-column: 3 / 5;
+      overflow: visible;
+      position: relative;
+      transition: grid-column 0.3s ease-in-out;
+    }
+
+    /* When gallery is active, sidebar shrinks to 1 column, content takes 3-5 */
+    .layout.gallery-active .sidebar {
+      grid-column: 1 / 2;
+    }
+
+    .layout.gallery-active .content {
+      grid-column: 3 / 5;
     }
 
     .nav-links {
@@ -196,12 +214,6 @@
       color: var(--text-dark);
     }
 
-    /* Right content area - no scrolling */
-    .content {
-      overflow: hidden;
-      position: relative;
-    }
-
     /* Sections - stacked with fade transitions */
     section {
       position: absolute;
@@ -234,6 +246,23 @@
       font-weight: 600;
     }
 
+    .made-with-love {
+      position: fixed;
+      bottom: var(--spacing);
+      right: var(--spacing);
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      z-index: 100;
+    }
+
+    .made-with-love.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
     /* Items list */
     .items {
       display: flex;
@@ -262,6 +291,11 @@
       border-top: none;
     }
 
+    /* Ensure content stays in column 2 even when meta is empty */
+    .item-content {
+      grid-column: 2;
+    }
+
     .item-content {
       display: flex;
       flex-direction: column;
@@ -286,6 +320,21 @@
       color: var(--text-dark);
       opacity: 0.8;
       margin-top: 2px;
+    }
+
+    .item-description ul {
+      margin: 4px 0 0 0;
+      padding-left: 16px;
+      list-style-type: disc;
+    }
+
+    .item-description ul li {
+      margin-bottom: 4px;
+    }
+
+    .item-description ul li a {
+      color: var(--text-dark);
+      opacity: 0.9;
     }
 
     .item-tools {
@@ -361,112 +410,140 @@
       text-decoration: underline;
     }
 
-    /* About carousel in sidebar */
-    .about-carousel {
-      width: 100%;
-      height: 140px;
+    /* Photo carousel - full bleed, in sidebar */
+    .photo-carousel-wrapper {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 200px;
       overflow: hidden;
-      position: relative;
-      margin: var(--spacing) 0;
-      border-top: 1px solid var(--line-color);
-      padding-top: var(--spacing);
+      z-index: 10;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
-    .about-carousel-track {
+    .photo-carousel-wrapper.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .photo-carousel {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .photo-carousel-track {
       display: flex;
       width: max-content;
       height: 100%;
-      animation: scroll-left 60s linear infinite;
+      animation: scroll-left 1200s linear infinite;
     }
 
-    .about-carousel-track:hover {
+    .photo-carousel-track:hover {
       animation-play-state: paused;
     }
 
     @keyframes scroll-left {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
+      100% { transform: translateX(-50%); }
     }
 
-    .about-carousel img {
+    .photo-carousel img {
       height: 100%;
       width: auto;
       flex-shrink: 0;
-      margin: 0 12px;
       object-fit: contain;
+      margin-right: 8px;
     }
 
-    .about-carousel.loading,
-    .about-carousel .error {
+    .photo-carousel.loading,
+    .photo-carousel .error {
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
       color: var(--text-muted);
-      min-height: 140px;
+      height: 100%;
     }
 
     /* Bento grid for gallery */
     .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      grid-auto-rows: minmax(200px, auto);
-      gap: 16px;
-      max-width: 800px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
     }
 
     .gallery-item {
       position: relative;
       overflow: hidden;
-      border-radius: 8px;
-      aspect-ratio: 1/1;
+      border-radius: 0;
       cursor: pointer;
       transition: transform 0.3s ease;
+      flex: 0 0 auto;
+      height: 250px;
     }
 
     .gallery-item:hover {
       transform: scale(1.02);
+      z-index: 1;
     }
 
     .gallery-item img {
-      width: 100%;
       height: 100%;
-      object-fit: cover;
+      width: auto;
+      object-fit: contain;
     }
 
-    .gallery-item.span-2x2 {
-      grid-column: span 2;
-      grid-row: span 2;
-      aspect-ratio: 2/1;
+    /* Gallery section - uses extended layout via .layout.gallery-active */
+    #gallery {
+      position: absolute;
+      left: 0;
+      right: 0;
     }
 
-    .gallery-item.span-2x1 {
-      grid-column: span 2;
-      grid-row: span 1;
-      aspect-ratio: 2/1;
-    }
-
-    .gallery-item.span-1x2 {
-      grid-column: span 1;
-      grid-row: span 2;
-      aspect-ratio: 1/2;
+    #gallery .bento-grid {
+      width: 100%;
     }
 
     @media (max-width: 600px) {
-      .bento-grid {
+      .layout {
         grid-template-columns: 1fr;
       }
-      .gallery-item.span-2x2,
-      .gallery-item.span-2x1,
-      .gallery-item.span-1x2 {
-        grid-column: span 1;
-        grid-row: auto;
+      .sidebar {
+        grid-column: 1;
+      }
+      .content {
+        grid-column: 1;
+      }
+      .layout.gallery-active {
+        grid-template-columns: 1fr;
+      }
+      .layout.gallery-active .sidebar {
+        grid-column: 1;
+      }
+      .layout.gallery-active .content {
+        grid-column: 1;
+      }
+      .bento-grid {
+        flex-direction: column;
+      }
+      .gallery-item {
+        width: 100%;
+        height: auto;
+      }
+      .gallery-item img {
+        width: 100%;
+        height: auto;
       }
     }
   </style>
 </head>
 <body>
   <div class="cursor-follower" id="cursorFollower"></div>
+  <div class="made-with-love visible">Made with 🧡</div>
   <div class="layout">
     <!-- Left sidebar with navigation -->
     <nav class="sidebar">
@@ -479,6 +556,11 @@
         <button class="nav-item" data-target="gallery">Gallery</button>
         <button class="nav-item" data-target="experience">Experience</button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
+      </div>
+
+      <!-- Photo carousel - full bleed -->
+      <div class="photo-carousel-wrapper" id="carousel-wrapper">
+        <div class="photo-carousel" id="photo-carousel"></div>
       </div>
 
       <div class="contact-bar">
@@ -502,7 +584,6 @@
         <div class="section-description">
           <strong>Osinachi Okpara</strong> is a Developer Advocate and Community Architect with 2+ years of experience building technical communities, creating developer education, and driving product adoption for cloud-native and AI technologies. Currently leading technical programs at NexaScale and contributing to open source projects at YC-backed startups.
         </div>
-        <div class="about-carousel" id="about-carousel"></div>
       </section>
 
       <!-- PROJECTS -->
@@ -566,27 +647,73 @@
         </div>
         <div class="items">
           <div class="item">
-            <div class="item-meta">YC W25</div>
+            <div class="item-meta">2026</div>
             <div class="item-content">
-              <div class="item-title"><a href="https://github.com/browser-use/browser-use/pull/2998" target="_blank" rel="noopener">Browser Use</a></div>
+              <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/6712" target="_blank" rel="noopener">Improve MCP documentation clarity about config file location</a></div>
+              <div class="item-subtitle">Anomaly Co · OpenCode</div>
             </div>
           </div>
           <div class="item">
             <div class="item-meta"></div>
             <div class="item-content">
-              <div class="item-title"><a href="https://github.com/truffle-ai/dexto/pull/311" target="_blank" rel="noopener">Dexto by Truffle AI</a></div>
+              <div class="item-title"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp/issues/721" target="_blank" rel="noopener">Add OpenCode MCP configuration to README</a></div>
+              <div class="item-subtitle">Google · Chrome DevTools MCP</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">YC W21</div>
+            <div class="item-meta">2025</div>
             <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sst/opencode/pull/2707" target="_blank" rel="noopener">OpenCode by SST</a></div>
+              <div class="item-title"><a href="https://github.com/anomalyco/opencode/pull/2707" target="_blank" rel="noopener">Enhance theme documentation with links to original sources</a></div>
+              <div class="item-subtitle">Anomaly Co · OpenCode</div>
             </div>
           </div>
           <div class="item">
-            <div class="item-meta">AWS</div>
+            <div class="item-meta"></div>
             <div class="item-content">
-              <div class="item-title"><a href="https://github.com/aws-solutions/innovation-sandbox-on-aws/issues/19" target="_blank" rel="noopener">Innovation Sandbox</a></div>
+              <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/2625" target="_blank" rel="noopener">Fix incomplete statement in config documentation</a></div>
+              <div class="item-subtitle">Anomaly Co · OpenCode</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/browser-use/browser-use/pull/2998" target="_blank" rel="noopener">Add comprehensive MCP Server documentation</a></div>
+              <div class="item-subtitle">Browser Use (YC W25) · Browser Use</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/truffle-ai/dexto/issues/309" target="_blank" rel="noopener">Create llms.txt and add View as Markdown functionality</a></div>
+              <div class="item-subtitle">Truffle AI (YC W25) · Dexto</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/aws-solutions/innovation-sandbox-on-aws/issues/19" target="_blank" rel="noopener">Enable automatic programmatic authentication for third-party APIs</a></div>
+              <div class="item-subtitle">AWS · Innovation Sandbox</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1357" target="_blank" rel="noopener">Implement Copy Page as Markdown and View as Markdown in docs</a></div>
+              <div class="item-subtitle">Slack · Bolt Python</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1353" target="_blank" rel="noopener">Propose using uv instead of pip for Python guides</a></div>
+              <div class="item-subtitle">Slack · Bolt Python</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-meta"></div>
+            <div class="item-content">
+              <div class="item-title"><a href="https://github.com/SINTEF/ci-cd/pull/357" target="_blank" rel="noopener">Fix GitHub environment variables issue across workflow files</a></div>
+              <div class="item-subtitle">SINTEF · CI/CD</div>
             </div>
           </div>
         </div>
@@ -1025,12 +1152,27 @@
         }
       });
       
-      // Load carousel when ABOUT is shown
-      if (targetId === 'about') {
-        loadAboutCarousel();
-      } else {
-        const aboutCarousel = document.getElementById('about-carousel');
-        if (aboutCarousel) aboutCarousel.innerHTML = '';
+      // Show/hide carousel based on section
+      const carouselWrapper = document.getElementById('carousel-wrapper');
+      const madeWithLove = document.querySelector('.made-with-love');
+      if (carouselWrapper) {
+        if (targetId === 'about') {
+          carouselWrapper.classList.remove('hidden');
+          if (madeWithLove) madeWithLove.classList.add('visible');
+        } else {
+          carouselWrapper.classList.add('hidden');
+          if (madeWithLove) madeWithLove.classList.remove('visible');
+        }
+      }
+
+      // Toggle gallery-active class on layout for extended gallery view
+      const layout = document.querySelector('.layout');
+      if (layout) {
+        if (targetId === 'gallery') {
+          layout.classList.add('gallery-active');
+        } else {
+          layout.classList.remove('gallery-active');
+        }
       }
       
       // Load bento grid when GALLERY is shown
@@ -1039,14 +1181,35 @@
       }
     }
     
-    // Load gallery from S3
-    const GALLERY_JSON_URL = 'https://osinachi-portfolio-gallery.s3-website-us-east-1.amazonaws.com/gallery/gallery.json';
+    // Load gallery from local path (switch to S3 URL for production)
+    const GALLERY_JSON_URL = 'gallery/gallery.json';
     
-    async function loadAboutCarousel() {
-      const aboutCarousel = document.getElementById('about-carousel');
-      if (!aboutCarousel) return;
+    // Position and load the photo carousel
+    function positionCarousel() {
+      const wrapper = document.getElementById('carousel-wrapper');
+      const themeToggle = document.getElementById('themeToggle');
+      const contactBar = document.querySelector('.contact-bar');
       
-      aboutCarousel.innerHTML = '<div class="loading">Loading photos...</div>';
+      if (!wrapper || !themeToggle || !contactBar) return;
+      
+      const toggleRect = themeToggle.getBoundingClientRect();
+      const contactRect = contactBar.getBoundingClientRect();
+      
+      // Position between theme toggle and contact bar with margins
+      const margin = 24;
+      const top = toggleRect.bottom + margin;
+      const bottom = contactRect.top - margin;
+      const height = bottom - top;
+      
+      wrapper.style.top = top + 'px';
+      wrapper.style.height = Math.max(height, 100) + 'px';
+    }
+    
+    async function loadPhotoCarousel() {
+      const carousel = document.getElementById('photo-carousel');
+      if (!carousel) return;
+      
+      carousel.innerHTML = '<div class="loading">Loading photos...</div>';
       
       try {
         const response = await fetch(GALLERY_JSON_URL);
@@ -1054,9 +1217,15 @@
         
         if (data.images && data.images.length > 0) {
           const track = document.createElement('div');
-          track.className = 'about-carousel-track';
+          track.className = 'photo-carousel-track';
           
-          data.images.forEach(img => {
+          // Shuffle images for randomized carousel
+          const shuffled = [...data.images].sort(() => Math.random() - 0.5);
+          
+          // Duplicate shuffled images for seamless infinite scroll
+          const allImages = [...shuffled, ...shuffled];
+          
+          allImages.forEach(img => {
             const imgEl = document.createElement('img');
             imgEl.src = img.url;
             imgEl.alt = img.title || 'Gallery photo';
@@ -1064,15 +1233,24 @@
             track.appendChild(imgEl);
           });
           
-          aboutCarousel.innerHTML = '';
-          aboutCarousel.appendChild(track);
+          carousel.innerHTML = '';
+          carousel.appendChild(track);
         } else {
-          aboutCarousel.innerHTML = '<div class="error">No photos in gallery</div>';
+          carousel.innerHTML = '<div class="error">No photos in gallery</div>';
         }
       } catch (error) {
-        aboutCarousel.innerHTML = '<div class="error">Failed to load photos</div>';
+        carousel.innerHTML = '<div class="error">Failed to load photos</div>';
       }
     }
+    
+    // Initialize carousel on page load
+    window.addEventListener('load', () => {
+      positionCarousel();
+      loadPhotoCarousel();
+    });
+    
+    // Reposition on resize
+    window.addEventListener('resize', positionCarousel);
     
     async function loadGalleryGrid() {
       const galleryGrid = document.getElementById('gallery-grid');
@@ -1085,6 +1263,7 @@
         const data = await response.json();
         
         if (data.images && data.images.length > 0) {
+          galleryGrid.innerHTML = ''; // Clear loading message
           data.images.forEach((img, index) => {
             const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
             
