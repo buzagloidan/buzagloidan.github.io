@@ -539,9 +539,136 @@
         height: auto;
       }
     }
+
+    /* Lightbox / Image Viewer */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+    }
+
+    .lightbox-close,
+    .lightbox-prev,
+    .lightbox-next {
+      position: absolute;
+      background: none;
+      border: 1px solid var(--bg-light);
+      color: var(--bg-light);
+      font-size: 16px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      font-family: 'Geist Mono', monospace;
+    }
+
+    .lightbox-close:hover,
+    .lightbox-prev:hover,
+    .lightbox-next:hover {
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+    }
+
+    .lightbox-close {
+      top: var(--spacing);
+      right: var(--spacing);
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .lightbox-prev {
+      left: var(--spacing);
+    }
+
+    .lightbox-next {
+      right: var(--spacing);
+    }
+
+    /* Counter display */
+    .lightbox-counter {
+      position: absolute;
+      bottom: var(--spacing);
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--bg-light);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lightbox-close,
+      .lightbox-prev,
+      .lightbox-next {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+      }
+
+      .lightbox-prev {
+        left: 10px;
+      }
+
+      .lightbox-next {
+        right: 10px;
+      }
+
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Lightbox / Image Viewer -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&#x2715;</button>
+    <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&#x2039;</button>
+    <div class="lightbox-content">
+      <img src="" alt="Gallery image" id="lightbox-img">
+    </div>
+    <button class="lightbox-next" id="lightbox-next" aria-label="Next">&#x203A;</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
   <div class="cursor-follower" id="cursorFollower"></div>
   <div class="made-with-love visible">Made with 🧡</div>
   <div class="layout">
@@ -1263,6 +1390,7 @@
         const data = await response.json();
         
         if (data.images && data.images.length > 0) {
+          galleryImages = data.images; // Store for lightbox navigation
           galleryGrid.innerHTML = ''; // Clear loading message
           data.images.forEach((img, index) => {
             const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
@@ -1272,7 +1400,7 @@
             itemEl.innerHTML = `<img src="${img.url}" alt="${img.title || 'Gallery photo'}" loading="lazy">`;
             
             itemEl.addEventListener('click', () => {
-              window.open(img.url, '_blank');
+              openLightbox(index);
             });
             
             galleryGrid.appendChild(itemEl);
@@ -1328,6 +1456,87 @@
     // Add hover effect on interactive elements
     const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
     interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorFollower.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorFollower.classList.remove('hovering');
+      });
+    });
+
+    // Lightbox / Image Viewer
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    
+    let galleryImages = [];
+    let currentImageIndex = 0;
+
+    function openLightbox(index) {
+      if (galleryImages.length === 0) return;
+      currentImageIndex = index;
+      updateLightboxImage();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function updateLightboxImage() {
+      const img = galleryImages[currentImageIndex];
+      lightboxImg.src = img.url;
+      lightboxImg.alt = img.title || 'Gallery photo';
+      lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+    }
+
+    function showPrevImage() {
+      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+      updateLightboxImage();
+    }
+
+    function showNextImage() {
+      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+      updateLightboxImage();
+    }
+
+    // Lightbox event listeners
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxPrev.addEventListener('click', showPrevImage);
+    lightboxNext.addEventListener('click', showNextImage);
+
+    // Close on backdrop click
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowLeft':
+          showPrevImage();
+          break;
+        case 'ArrowRight':
+          showNextImage();
+          break;
+      }
+    });
+
+    // Add hover effect for lightbox buttons
+    const lightboxButtons = document.querySelectorAll('.lightbox-close, .lightbox-prev, .lightbox-next');
+    lightboxButtons.forEach(el => {
       el.addEventListener('mouseenter', () => {
         cursorFollower.classList.add('hovering');
       });
