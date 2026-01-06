@@ -126,9 +126,9 @@
       gap: var(--spacing);
     }
 
-    /* Default: sidebar takes 2 columns, content takes 2 columns */
+    /* Default: sidebar takes 1 column, content takes 3 columns */
     .sidebar {
-      grid-column: 1 / 3;
+      grid-column: 1 / 2;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -137,24 +137,10 @@
     }
 
     .content {
-      grid-column: 3 / 5;
+      grid-column: 2 / 5;
       overflow: visible;
       position: relative;
       transition: grid-column 0.3s ease-in-out;
-    }
-
-    /* When gallery is active, sidebar shrinks to 1 column, content takes 3-5 */
-    .layout.gallery-active .sidebar {
-      grid-column: 1 / 2;
-    }
-
-    .layout.gallery-active .content {
-      grid-column: 2 / 5;
-    }
-
-    /* Keep contact bar on one line when gallery is active (narrower sidebar) */
-    .layout.gallery-active .contact-bar {
-      flex-wrap: nowrap;
     }
 
     .nav-links {
@@ -168,7 +154,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     .profile-photo {
@@ -570,7 +556,7 @@
       object-fit: contain;
     }
 
-    /* Gallery section - uses extended layout via .layout.gallery-active */
+    /* Gallery section */
     #gallery {
       position: absolute;
       left: 0;
@@ -589,15 +575,6 @@
         grid-column: 1;
       }
       .content {
-        grid-column: 1;
-      }
-      .layout.gallery-active {
-        grid-template-columns: 1fr;
-      }
-      .layout.gallery-active .sidebar {
-        grid-column: 1;
-      }
-      .layout.gallery-active .content {
         grid-column: 1;
       }
       .bento-grid {
@@ -1561,15 +1538,8 @@
         loadingScreen.classList.add('hidden');
         mainWrapper.classList.add('visible');
         
-        // Show carousel wrapper and made-with-love
-        const carouselWrapper = document.getElementById('carousel-wrapper');
-        const madeWithLove = document.getElementById('made-with-love');
-        if (carouselWrapper) {
-          carouselWrapper.classList.add('visible');
-        }
-        if (madeWithLove) {
-          madeWithLove.classList.add('visible');
-        }
+        // Handle initial route based on URL
+        handleInitialRoute();
         
         // Position and load carousel after transition completes
         setTimeout(() => {
@@ -1640,7 +1610,7 @@
     createRoundedFavicon();
 
     // Show section function
-    function showSection(targetId) {
+    function showSection(targetId, updateUrl = true) {
       // Hide all sections
       sections.forEach(section => {
         section.classList.remove('active');
@@ -1660,26 +1630,24 @@
         }
       });
       
+      // Update URL if requested
+      if (updateUrl) {
+        const newPath = targetId === 'about' ? '/' : '/' + targetId;
+        history.pushState({ section: targetId }, '', newPath);
+      }
+      
       // Show/hide carousel based on section
       const carouselWrapper = document.getElementById('carousel-wrapper');
       const madeWithLove = document.querySelector('.made-with-love');
       if (carouselWrapper) {
         if (targetId === 'about') {
           carouselWrapper.classList.remove('hidden');
+          carouselWrapper.classList.add('visible');
           if (madeWithLove) madeWithLove.classList.add('visible');
         } else {
           carouselWrapper.classList.add('hidden');
+          carouselWrapper.classList.remove('visible');
           if (madeWithLove) madeWithLove.classList.remove('visible');
-        }
-      }
-
-      // Toggle gallery-active class on layout for extended gallery view
-      const layout = document.querySelector('.layout');
-      if (layout) {
-        if (targetId === 'gallery') {
-          layout.classList.add('gallery-active');
-        } else {
-          layout.classList.remove('gallery-active');
         }
       }
       
@@ -1687,6 +1655,43 @@
       if (targetId === 'gallery') {
         loadGalleryGrid();
       }
+    }
+    
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.section) {
+        showSection(event.state.section, false);
+      } else {
+        // Default to about if no state
+        const path = window.location.pathname.replace('/', '') || 'about';
+        showSection(path, false);
+      }
+    });
+    
+    // Handle initial page load based on URL
+    function handleInitialRoute() {
+      const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
+      
+      // Check for redirect from 404.html
+      const redirectPath = sessionStorage.getItem('redirectPath');
+      if (redirectPath) {
+        sessionStorage.removeItem('redirectPath');
+        const section = redirectPath.replace('/', '').toLowerCase();
+        if (validSections.includes(section)) {
+          history.replaceState({ section: section }, '', redirectPath);
+          showSection(section, false);
+          return;
+        }
+      }
+      
+      // Handle direct URL access
+      const path = window.location.pathname.replace('/', '').toLowerCase() || 'about';
+      const targetSection = validSections.includes(path) ? path : 'about';
+      
+      // Replace current state so back button works correctly
+      const urlPath = targetSection === 'about' ? '/' : '/' + targetSection;
+      history.replaceState({ section: targetSection }, '', urlPath);
+      showSection(targetSection, false);
     }
     
     // Position and load the photo carousel

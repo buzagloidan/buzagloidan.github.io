@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Redirect to index.html while preserving the path for client-side routing
+    // This enables SPA-style routing on GitHub Pages
+    const path = window.location.pathname;
+    const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
+    const section = path.replace('/', '').toLowerCase();
+    
+    if (validSections.includes(section)) {
+      // Store the intended path and redirect to root
+      sessionStorage.setItem('redirectPath', path);
+      window.location.replace('/');
+    } else {
+      // Unknown path, redirect to home
+      window.location.replace('/');
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
