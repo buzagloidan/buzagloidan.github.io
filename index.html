@@ -149,7 +149,12 @@
     }
 
     .layout.gallery-active .content {
-      grid-column: 3 / 5;
+      grid-column: 2 / 5;
+    }
+
+    /* Keep contact bar on one line when gallery is active (narrower sidebar) */
+    .layout.gallery-active .contact-bar {
+      flex-wrap: nowrap;
     }
 
     .nav-links {
@@ -765,9 +770,67 @@
     .main-wrapper.visible {
       transform: translateY(0);
     }
+
+    /* Mobile Screen Styles */
+    .mobile-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #121212;
+      z-index: 100001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .mobile-screen.visible {
+      display: flex;
+    }
+
+    .mobile-content {
+      text-align: center;
+      color: #ffead3;
+      font-family: 'Geist Mono', monospace;
+      max-width: 320px;
+    }
+
+    .mobile-message {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      line-height: 1.8;
+    }
+
+    .mobile-message p {
+      margin-bottom: 1.2em;
+    }
+
+    .mobile-message p:last-child {
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body>
+  <!-- Mobile Screen -->
+  <div class="mobile-screen" id="mobile-screen">
+    <div class="mobile-content">
+      <div class="mobile-message">
+        <p><strong>Hey, you!</strong></p>
+	<p>I know you'd like to view this wonder of a website on your phone.</p>
+	<p>Trust me, I also want that experience for you. But...</p>
+	<p>it just can't happen.</p>
+        <p>Don't get me wrong: I tried my best. I really did. But I just... couldn't.</p>
+	<p>Maybe sometime in the future, I'll be able to, but right now...</p>
+	<p>if you can just view this on your PC or Mac, I promiseeeee, the experience is SO worth it. 🤭</p>
+        <p>It was... Made with 🧡!</p>
+        <p>Thanks for understanding!</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Loading Screen -->
   <div class="loading-screen" id="loading-screen">
     <div class="loading-content">
@@ -1309,9 +1372,7 @@
          <div class="section-description">
            Personal gallery.
          </div>
-         <div class="bento-grid" id="gallery-grid">
-           <div class="loading">Loading gallery...</div>
-         </div>
+         <div class="bento-grid" id="gallery-grid"></div>
        </section>
  
        <!-- EXPERIENCE -->
@@ -1362,6 +1423,34 @@
   </div> <!-- End main-wrapper -->
 
   <script>
+    // Mobile Detection
+    const mobileScreen = document.getElementById('mobile-screen');
+    
+    function isMobileDevice() {
+      // Check for touch capability and screen width
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth <= 800;
+      
+      // Also check user agent for mobile devices
+      const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      return (isTouchDevice && isSmallScreen) || mobileUserAgent;
+    }
+    
+    function checkMobile() {
+      if (isMobileDevice()) {
+        mobileScreen.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileScreen.classList.remove('visible');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Check on load and resize
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     // Loading Screen Logic
     const loadingScreen = document.getElementById('loading-screen');
     const loadingPercentage = document.getElementById('loading-percentage');
@@ -1370,6 +1459,7 @@
     let loadingComplete = false;
     let totalBytes = 0;
     let loadedBytes = 0;
+    let preloadedGalleryData = null;
     
     // Update the percentage display
     function updateProgress() {
@@ -1421,6 +1511,7 @@
         const response = await fetch('gallery/gallery.json');
         const data = await response.json();
         if (data.images && data.images.length > 0) {
+          preloadedGalleryData = data; // Store for later use
           galleryImageUrls = data.images.map(img => img.url);
         }
       } catch (e) {
@@ -1461,6 +1552,9 @@
       loadingComplete = true;
       loadingPercentage.textContent = '100%';
       
+      // Build gallery grid from preloaded data
+      buildGalleryGrid();
+      
       // Brief pause at 100%, then transition to content
       setTimeout(() => {
         // Animate loading screen up and main content up
@@ -1488,6 +1582,27 @@
           loadingScreen.style.display = 'none';
         }, 800);
       }, 300);
+    }
+    
+    // Build gallery grid from preloaded data
+    function buildGalleryGrid() {
+      const galleryGrid = document.getElementById('gallery-grid');
+      if (!galleryGrid || !preloadedGalleryData || !preloadedGalleryData.images) return;
+      
+      galleryGrid.innerHTML = '';
+      preloadedGalleryData.images.forEach((img, index) => {
+        const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
+        
+        const itemEl = document.createElement('div');
+        itemEl.className = `gallery-item ${spanClass}`;
+        itemEl.innerHTML = `<img src="${img.url}" alt="${img.title || 'Gallery photo'}" loading="lazy">`;
+        
+        itemEl.addEventListener('click', () => {
+          openLightbox(index);
+        });
+        
+        galleryGrid.appendChild(itemEl);
+      });
     }
     
     // Start preloading
@@ -1574,9 +1689,6 @@
       }
     }
     
-    // Load gallery from local path (switch to S3 URL for production)
-    const GALLERY_JSON_URL = 'gallery/gallery.json';
-    
     // Position and load the photo carousel
     function positionCarousel() {
       const wrapper = document.getElementById('carousel-wrapper');
@@ -1598,78 +1710,42 @@
       wrapper.style.height = Math.max(height, 100) + 'px';
     }
     
-    async function loadPhotoCarousel() {
+    function loadPhotoCarousel() {
       const carousel = document.getElementById('photo-carousel');
-      if (!carousel) return;
+      if (!carousel || !preloadedGalleryData || !preloadedGalleryData.images) return;
       
-      carousel.innerHTML = '<div class="loading">Loading photos...</div>';
+      const data = preloadedGalleryData;
       
-      try {
-        const response = await fetch(GALLERY_JSON_URL);
-        const data = await response.json();
+      if (data.images.length > 0) {
+        const track = document.createElement('div');
+        track.className = 'photo-carousel-track';
         
-        if (data.images && data.images.length > 0) {
-          const track = document.createElement('div');
-          track.className = 'photo-carousel-track';
-          
-          // Shuffle images for randomized carousel
-          const shuffled = [...data.images].sort(() => Math.random() - 0.5);
-          
-          // Duplicate shuffled images for seamless infinite scroll
-          const allImages = [...shuffled, ...shuffled];
-          
-          allImages.forEach(img => {
-            const imgEl = document.createElement('img');
-            imgEl.src = img.url;
-            imgEl.alt = img.title || 'Gallery photo';
-            imgEl.loading = 'lazy';
-            track.appendChild(imgEl);
-          });
-          
-          carousel.innerHTML = '';
-          carousel.appendChild(track);
-        } else {
-          carousel.innerHTML = '<div class="error">No photos in gallery</div>';
-        }
-      } catch (error) {
-        carousel.innerHTML = '<div class="error">Failed to load photos</div>';
+        // Shuffle images for randomized carousel
+        const shuffled = [...data.images].sort(() => Math.random() - 0.5);
+        
+        // Duplicate shuffled images for seamless infinite scroll
+        const allImages = [...shuffled, ...shuffled];
+        
+        allImages.forEach(img => {
+          const imgEl = document.createElement('img');
+          imgEl.src = img.url;
+          imgEl.alt = img.title || 'Gallery photo';
+          imgEl.loading = 'lazy';
+          track.appendChild(imgEl);
+        });
+        
+        carousel.innerHTML = '';
+        carousel.appendChild(track);
       }
     }
     
     // Reposition on resize
     window.addEventListener('resize', positionCarousel);
     
-    async function loadGalleryGrid() {
-      const galleryGrid = document.getElementById('gallery-grid');
-      if (!galleryGrid) return;
-      
-      galleryGrid.innerHTML = '<div class="loading">Loading gallery...</div>';
-      
-      try {
-        const response = await fetch(GALLERY_JSON_URL);
-        const data = await response.json();
-        
-        if (data.images && data.images.length > 0) {
-          galleryImages = data.images; // Store for lightbox navigation
-          galleryGrid.innerHTML = ''; // Clear loading message
-          data.images.forEach((img, index) => {
-            const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
-            
-            const itemEl = document.createElement('div');
-            itemEl.className = `gallery-item ${spanClass}`;
-            itemEl.innerHTML = `<img src="${img.url}" alt="${img.title || 'Gallery photo'}" loading="lazy">`;
-            
-            itemEl.addEventListener('click', () => {
-              openLightbox(index);
-            });
-            
-            galleryGrid.appendChild(itemEl);
-          });
-        } else {
-          galleryGrid.innerHTML = '<div class="error">No photos in gallery</div>';
-        }
-      } catch (error) {
-        galleryGrid.innerHTML = '<div class="error">Failed to load gallery</div>';
+    function loadGalleryGrid() {
+      // Gallery is already built during preload, just ensure galleryImages is set for lightbox
+      if (preloadedGalleryData && preloadedGalleryData.images) {
+        galleryImages = preloadedGalleryData.images;
       }
     }
 
