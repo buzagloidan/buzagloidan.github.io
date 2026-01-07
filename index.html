@@ -251,9 +251,16 @@
       font-weight: 600;
     }
 
-    /* About intro */
+    /* About intro - responsive sizing to prevent carousel overlap */
     .about-intro {
-      font-size: 54px;
+      font-size: clamp(18px, 3.5vw, 54px);
+      max-height: 40vh;
+      overflow: hidden;
+    }
+
+    /* Ensure About section never scrolls */
+    #about {
+      overflow: hidden !important;
     }
 
     .about-intro a {
@@ -1846,7 +1853,7 @@
       }
     }
     
-    // Reposition on resize
+    // Reposition carousel on resize
     window.addEventListener('resize', positionCarousel);
     
     function loadGalleryGrid() {
