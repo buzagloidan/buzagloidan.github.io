@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - Redirecting...</title>
   <script>
-    // Redirect to index.html while preserving the path for client-side routing
-    // This enables SPA-style routing on GitHub Pages
-    const path = window.location.pathname;
-    const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
-    const section = path.replace('/', '').toLowerCase();
-    
-    if (validSections.includes(section)) {
-      // Store the intended path and redirect to root
-      sessionStorage.setItem('redirectPath', path);
-      window.location.replace('/');
-    } else {
-      // Unknown path, redirect to home
-      window.location.replace('/');
-    }
+    // Redirect to home page for any unknown paths
+    window.location.replace('/');
   </script>
 </head>
 <body>

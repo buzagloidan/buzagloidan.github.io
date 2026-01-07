@@ -1713,8 +1713,8 @@
       
       // Update URL if requested
       if (updateUrl) {
-        const newPath = targetId === 'about' ? '/' : '/' + targetId;
-        history.pushState({ section: targetId }, '', newPath);
+        const newHash = targetId === 'about' ? '' : '#' + targetId;
+        history.pushState({ section: targetId }, '', '/' + newHash);
       }
       
       // Show/hide carousel based on section
@@ -1772,36 +1772,32 @@
         showSection(event.state.section, false);
       } else {
         // Default to about if no state
-        const path = window.location.pathname.replace('/', '') || 'about';
-        showSection(path, false);
+        const hash = window.location.hash.replace('#', '') || 'about';
+        showSection(hash, false);
       }
     });
     
-    // Handle initial page load based on URL
+    // Handle initial page load based on URL hash
     function handleInitialRoute() {
       const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
       
-      // Check for redirect from 404.html
-      const redirectPath = sessionStorage.getItem('redirectPath');
-      if (redirectPath) {
-        sessionStorage.removeItem('redirectPath');
-        const section = redirectPath.replace('/', '').toLowerCase();
-        if (validSections.includes(section)) {
-          history.replaceState({ section: section }, '', redirectPath);
-          showSection(section, false);
-          return;
-        }
-      }
+      // Get section from hash (e.g., #projects -> projects)
+      const hash = window.location.hash.replace('#', '').toLowerCase() || 'about';
+      const targetSection = validSections.includes(hash) ? hash : 'about';
       
-      // Handle direct URL access
-      const path = window.location.pathname.replace('/', '').toLowerCase() || 'about';
-      const targetSection = validSections.includes(path) ? path : 'about';
-      
-      // Replace current state so back button works correctly
-      const urlPath = targetSection === 'about' ? '/' : '/' + targetSection;
-      history.replaceState({ section: targetSection }, '', urlPath);
+      // Set initial state
+      const newHash = targetSection === 'about' ? '' : '#' + targetSection;
+      history.replaceState({ section: targetSection }, '', '/' + newHash);
       showSection(targetSection, false);
     }
+    
+    // Handle hash change (for direct hash navigation)
+    window.addEventListener('hashchange', () => {
+      const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
+      const hash = window.location.hash.replace('#', '').toLowerCase() || 'about';
+      const targetSection = validSections.includes(hash) ? hash : 'about';
+      showSection(targetSection, false);
+    });
     
     // Position and load the photo carousel
     function positionCarousel() {
