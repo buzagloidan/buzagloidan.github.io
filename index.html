@@ -13,6 +13,10 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
+   <!-- Masonry.js and imagesLoaded for gallery layout -->
+   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+   <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+   
    <!-- SEO Meta Tags -->
    <meta name="description" content="I'm a software engineer, developer advocate and AWS Community Builder, passionate about agentic AI, cloud engineering, and open-source software.">
    <meta name="author" content="Osinachi Okpara">
@@ -573,12 +577,9 @@
       height: 100%;
     }
 
-    /* Bento grid for gallery */
+    /* Bento grid for gallery - Masonry layout */
     .bento-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: flex-start;
+      width: 100%;
     }
 
     .gallery-item {
@@ -587,8 +588,9 @@
       border-radius: 0;
       cursor: pointer;
       transition: transform 0.3s ease;
-      flex: 0 0 auto;
-      height: 250px;
+      margin-bottom: 6px;
+      /* Single uniform column width - let Masonry handle vertical stacking */
+      width: calc(16.666% - 5px); /* 6 columns */
     }
 
     .gallery-item:hover {
@@ -597,9 +599,9 @@
     }
 
     .gallery-item img {
-      height: 100%;
-      width: auto;
-      object-fit: contain;
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     /* Gallery section */
@@ -613,6 +615,18 @@
       width: 100%;
     }
 
+    @media (max-width: 1200px) {
+      .gallery-item {
+        width: calc(20% - 5px); /* 5 columns */
+      }
+    }
+
+    @media (max-width: 900px) {
+      .gallery-item {
+        width: calc(25% - 5px); /* 4 columns */
+      }
+    }
+
     @media (max-width: 600px) {
       .layout {
         grid-template-columns: 1fr;
@@ -623,16 +637,14 @@
       .content {
         grid-column: 1;
       }
-      .bento-grid {
-        flex-direction: column;
-      }
       .gallery-item {
-        width: 100%;
-        height: auto;
+        width: calc(33.333% - 4px); /* 3 columns */
       }
-      .gallery-item img {
-        width: 100%;
-        height: auto;
+    }
+
+    @media (max-width: 400px) {
+      .gallery-item {
+        width: calc(50% - 3px); /* 2 columns */
       }
     }
 
@@ -1624,6 +1636,16 @@
         });
         
         galleryGrid.appendChild(itemEl);
+      });
+      
+      // Initialize Masonry after images are loaded
+      imagesLoaded(galleryGrid, function() {
+        new Masonry(galleryGrid, {
+          itemSelector: '.gallery-item',
+          columnWidth: '.gallery-item',
+          percentPosition: true,
+          gutter: 6
+        });
       });
     }
     
