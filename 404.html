@@ -5,8 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page Not Found - Redirecting...</title>
   <script>
-    // Redirect to home page for any unknown paths
-    window.location.replace('/');
+    // External URL redirects
+    const externalRedirects = {
+      'linkedin': 'https://linkedin.com/in/osinachiokpara',
+      'github': 'https://github.com/sin4ch',
+      'x': 'https://x.com/sin4ch',
+      'twitter': 'https://x.com/sin4ch',
+      'email': 'mailto:okparaosi17@gmail.com',
+      'resume': 'https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view'
+    };
+    
+    const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+    if (externalRedirects[path]) {
+      window.location.replace(externalRedirects[path]);
+    } else {
+      // Redirect to home page for any unknown paths
+      window.location.replace('/');
+    }
   </script>
 </head>
 <body>
