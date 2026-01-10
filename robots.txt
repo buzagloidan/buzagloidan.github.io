@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sin4ch.github.io/sitemap.xml
+Sitemap: https://sin4.ch/sitemap.xml
