@@ -53,7 +53,7 @@ def home():
     # Personal info
     personal = {
         'name': 'Idan Buzaglo',
-        'current_role': 'AI Solutions Engineer',
+        'current_role': 'AI Builder @ monday',
         'company': '',
         'education': [
             {
@@ -76,7 +76,7 @@ def home():
     }
     
     return render_template('index.html', 
-                          title='Idan Buzaglo - AI Solutions Engineer',
+                          title='Idan Buzaglo - AI Builder @ monday',
                           projects=projects,
                           publications=publications,
                           personal=personal)
