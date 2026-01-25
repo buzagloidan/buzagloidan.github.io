@@ -53,8 +53,8 @@ def home():
     # Personal info
     personal = {
         'name': 'Idan Buzaglo',
-        'current_role': 'AI Solutions Engineer @ Jeen.ai',
-        'company': 'Jeen.ai',
+        'current_role': 'AI Solutions Engineer',
+        'company': '',
         'education': [
             {
                 'degree': 'Master\'s in Data Science',
