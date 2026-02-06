@@ -2142,13 +2142,20 @@
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const targetId = item.dataset.target;
-        showSection(targetId);
-        // Close hamburger menu on mobile after nav click
         if (sidebar.classList.contains('menu-open')) {
+          // Disable section transitions so the swap is instant behind the overlay
+          sections.forEach(s => s.style.transition = 'none');
+          showSection(targetId);
+          // Force reflow so the instant swap applies before re-enabling transitions
+          document.body.offsetHeight;
+          sections.forEach(s => s.style.transition = '');
+          // Now fade out the menu to reveal the new section already in place
           sidebar.classList.remove('menu-open');
           hamburger.classList.remove('open');
           document.body.style.overflow = '';
           if (carouselWrapperEl) carouselWrapperEl.style.display = '';
+        } else {
+          showSection(targetId);
         }
       });
     });
