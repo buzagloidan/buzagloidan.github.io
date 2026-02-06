@@ -82,7 +82,7 @@
       --text-dark-80: #3f3c36;
       --text-dark-90: #282520;
       --text-muted-70: #b09a7e;
-      --spacing: 40px;
+      --spacing: clamp(16px, 3vw, 40px);
       --line-color: #c9b99a;
     }
 
@@ -103,7 +103,7 @@
       scroll-behavior: smooth;
     }
 
-    /* Cursor follower circle */
+    /* Cursor follower circle - hidden on touch devices */
     .cursor-follower {
       width: 12px;
       height: 12px;
@@ -122,6 +122,12 @@
       height: 30px;
     }
 
+    @media (hover: none) and (pointer: coarse) {
+      .cursor-follower {
+        display: none !important;
+      }
+    }
+
     body {
       font-family: 'Geist Mono', monospace;
       background-color: var(--bg-light);
@@ -135,12 +141,14 @@
       transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out, border-color 0.8s ease-in-out;
     }
 
-    /* Main layout: fixed 4-column grid for smooth transitions */
+    /* Main layout */
     .layout {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
-      height: 100vh;
+      height: calc(100vh - 52px);
+      height: calc(100dvh - 52px);
       padding: var(--spacing);
+      padding-bottom: 0;
       gap: var(--spacing);
     }
 
@@ -150,7 +158,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      justify-content: space-between;
       transition: grid-column 0.3s ease-in-out, opacity 0.3s ease-in-out;
     }
 
@@ -167,12 +174,19 @@
       gap: 12px;
     }
 
-    /* Contact bar at bottom of sidebar */
+    /* Contact bar — fixed bottom bar on all screen sizes */
     .contact-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: nowrap;
+      justify-content: space-between;
+      padding: var(--spacing);
+      background-color: var(--bg-light);
+      z-index: 100;
+      transition: background-color 0.8s ease-in-out;
     }
 
     .profile-photo {
@@ -182,7 +196,6 @@
       background-color: var(--text-muted);
       overflow: hidden;
       flex-shrink: 0;
-      margin-right: 16px;
     }
 
     .profile-photo img {
@@ -191,9 +204,18 @@
       object-fit: cover;
     }
 
+    .contact-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
     .contact-bar a {
       font-size: 11px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-muted);
       transition: color 0.2s ease;
@@ -222,6 +244,7 @@
       font-family: inherit;
       padding: 0;
       width: fit-content;
+      white-space: nowrap;
     }
 
     .nav-item:hover {
@@ -246,6 +269,7 @@
       transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.8s ease-in-out, color 0.8s ease-in-out;
       overflow-y: auto;
       scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
     }
 
     section.active {
@@ -255,24 +279,23 @@
 
     .section-description {
       font-family: 'Instrument Serif', serif;
-      font-size: 35px;
+      font-size: clamp(24px, 4vw, 35px);
       line-height: 1.3;
       color: var(--text-dark);
-      margin-bottom: 32px;
+      margin-bottom: clamp(20px, 3vw, 32px);
     }
 
     .section-description strong {
       font-weight: 600;
     }
 
-    /* About intro - responsive sizing to prevent carousel overlap */
+    /* About intro - responsive sizing */
     .about-intro {
       font-size: clamp(18px, 3.5vw, 54px);
-      max-height: 40vh;
       overflow: hidden;
     }
 
-    /* Ensure About section never scrolls */
+    /* Ensure About section never scrolls on desktop */
     #about {
       overflow: hidden !important;
     }
@@ -303,22 +326,6 @@
       51%, 100% { opacity: 0; }
     }
 
-    .made-with-love {
-      position: fixed;
-      bottom: var(--spacing);
-      right: var(--spacing);
-      font-size: 12px;
-      color: var(--text-muted);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-      z-index: 100;
-    }
-
-    .made-with-love.visible {
-      opacity: 1;
-      visibility: visible;
-    }
 
     /* Items list */
     .items {
@@ -330,7 +337,7 @@
     .item {
       display: grid;
       grid-template-columns: 1fr 2fr;
-      gap: 24px;
+      gap: clamp(12px, 2vw, 24px);
       align-items: start;
       padding-top: 16px;
     }
@@ -346,6 +353,15 @@
 
     .item-meta:empty {
       border-top: none;
+    }
+
+    /* Extra spacing before year sections (non-empty meta = new year group) */
+    .item:has(.item-meta:not(:empty)) + .item:has(.item-meta:not(:empty)) {
+      margin-top: 0;
+    }
+
+    .items > .item:has(.item-meta:not(:empty)):not(:first-child) {
+      margin-top: 24px;
     }
 
     /* Ensure content stays in column 2 even when meta is empty */
@@ -425,6 +441,7 @@
       cursor: pointer;
       transition: all 0.5s ease-in-out;
       margin-top: 16px;
+      flex-shrink: 0;
     }
 
     /* Dark mode styles */
@@ -609,7 +626,6 @@
       cursor: pointer;
       transition: transform 0.3s ease;
       margin-bottom: 6px;
-      /* Single uniform column width - let Masonry handle vertical stacking */
       width: calc(16.666% - 5px); /* 6 columns */
     }
 
@@ -633,39 +649,6 @@
 
     #gallery .bento-grid {
       width: 100%;
-    }
-
-    @media (max-width: 1200px) {
-      .gallery-item {
-        width: calc(20% - 5px); /* 5 columns */
-      }
-    }
-
-    @media (max-width: 900px) {
-      .gallery-item {
-        width: calc(25% - 5px); /* 4 columns */
-      }
-    }
-
-    @media (max-width: 600px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        grid-column: 1;
-      }
-      .content {
-        grid-column: 1;
-      }
-      .gallery-item {
-        width: calc(33.333% - 4px); /* 3 columns */
-      }
-    }
-
-    @media (max-width: 400px) {
-      .gallery-item {
-        width: calc(50% - 3px); /* 2 columns */
-      }
     }
 
     /* Lightbox / Image Viewer */
@@ -750,6 +733,22 @@
       right: var(--spacing);
     }
 
+    /* Nav row for mobile lightbox (prev/counter/next above image) */
+    .lightbox-nav-row {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      order: 1;
+      margin-bottom: 16px;
+    }
+
+    /* Mobile-only lightbox buttons hidden on desktop */
+    .lightbox-prev-mobile,
+    .lightbox-next-mobile {
+      display: none;
+    }
+
     /* Counter display */
     .lightbox-counter {
       position: absolute;
@@ -760,29 +759,6 @@
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-    }
-
-    @media (max-width: 600px) {
-      .lightbox-close,
-      .lightbox-prev,
-      .lightbox-next {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
-      }
-
-      .lightbox-prev {
-        left: 10px;
-      }
-
-      .lightbox-next {
-        right: 10px;
-      }
-
-      .lightbox-close {
-        top: 10px;
-        right: 10px;
-      }
     }
 
     /* Loading Screen Styles */
@@ -818,7 +794,10 @@
 
     /* Main wrapper for swipe animation */
     .main-wrapper {
+      min-height: 100vh;
+      min-height: 100dvh;
       transform: translateY(100vh);
+      transform: translateY(100dvh);
       transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
@@ -826,66 +805,310 @@
       transform: translateY(0);
     }
 
-    /* Mobile Screen Styles */
-    .mobile-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #121212;
-      z-index: 100001;
+    /* ============================================
+       RESPONSIVE BREAKPOINTS
+       ============================================ */
+
+    /* Gallery responsive columns */
+    @media (max-width: 1200px) {
+      .gallery-item {
+        width: calc(20% - 5px); /* 5 columns */
+      }
+    }
+
+    /* Tablet: 2-column layout */
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr 2fr;
+      }
+      .sidebar {
+        grid-column: 1 / 2;
+      }
+      .content {
+        grid-column: 2 / 3;
+      }
+      .gallery-item {
+        width: calc(25% - 5px); /* 4 columns */
+      }
+    }
+
+    /* ---- Mobile top bar with theme toggle + hamburger ---- */
+    .mobile-top-bar {
       display: none;
-      align-items: center;
+    }
+
+    .hamburger {
+      display: none;
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-direction: column;
       justify-content: center;
-      padding: 40px;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
-    .mobile-screen.visible {
-      display: flex;
+    .hamburger-line {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    .mobile-content {
-      text-align: center;
-      color: #ffead3;
-      font-family: 'Geist Mono', monospace;
-      max-width: 320px;
+    .hamburger.open .hamburger-line:first-child {
+      transform: translateY(4px) rotate(45deg);
     }
 
-    .mobile-message {
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: 0.05em;
-      line-height: 1.8;
+    .hamburger.open .hamburger-line:last-child {
+      transform: translateY(-4px) rotate(-45deg);
     }
 
-    .mobile-message p {
-      margin-bottom: 1.2em;
+    /* Mobile: stacked layout */
+    @media (max-width: 768px) {
+      html, body {
+        overflow: auto;
+        height: auto;
+      }
+
+      /* Show mobile top bar */
+      .mobile-top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: var(--spacing) var(--spacing) 0;
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 10020;
+        transition: background-color 0.8s ease-in-out;
+      }
+
+      .mobile-top-bar .theme-toggle {
+        margin-top: 0;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        height: calc(100vh - 52px);
+        height: calc(100dvh - 52px);
+        padding-top: calc(var(--spacing) + 36px);
+      }
+
+      /* Hide sidebar theme toggle (it's in top bar now) */
+      .nav-links .theme-toggle {
+        display: none;
+      }
+
+      /* Sidebar = full-screen overlay */
+      .sidebar {
+        position: fixed;
+        inset: 0;
+        z-index: 10010;
+        background-color: var(--bg-light);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        padding: 60px var(--spacing);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.8s ease-in-out;
+      }
+
+      .sidebar.menu-open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .nav-item {
+        font-size: 14px;
+        letter-spacing: 0.2em;
+      }
+
+      .contact-bar .contact-links {
+        gap: 8px;
+      }
+
+      .contact-bar .dot {
+        font-size: 11px;
+      }
+
+      .contact-bar a {
+        font-size: 11px;
+      }
+
+      .content {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 0;
+      }
+
+      /* About section can scroll on mobile */
+      #about {
+        overflow-y: auto !important;
+      }
+
+      .about-intro {
+        font-size: 10vw !important;
+        max-height: none !important;
+        line-height: 1.2 !important;
+      }
+
+      .section-description {
+        font-size: clamp(24px, 6vw, 32px);
+        margin-bottom: 20px;
+      }
+
+      /* Stack items vertically on mobile */
+      .item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .item-content {
+        grid-column: 1;
+      }
+
+      .item-meta:empty {
+        display: none;
+      }
+
+      .gallery-item {
+        width: calc(33.333% - 4px); /* 3 columns */
+      }
+
+      /* Hide carousel on mobile */
+      .photo-carousel-wrapper {
+        display: none !important;
+      }
+
+      /* Lightbox — nav above image on mobile */
+      .lightbox {
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        padding: 60px 16px 24px;
+      }
+
+      /* Hide desktop-only lightbox nav */
+      .lightbox-desktop-nav,
+      .lightbox-desktop-counter {
+        display: none !important;
+      }
+
+      /* Show mobile nav row — below the image */
+      .lightbox-nav-row {
+        display: flex;
+        order: 3;
+      }
+
+      .lightbox-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+      }
+
+      .lightbox-prev-mobile,
+      .lightbox-next-mobile {
+        background: none;
+        border: 1px solid #ffead3;
+        color: #ffead3;
+        font-size: 18px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-family: 'Geist Mono', monospace;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .lightbox-prev-mobile:hover,
+      .lightbox-next-mobile:hover {
+        background-color: #ffead3;
+        color: #121212;
+      }
+
+      .lightbox-content {
+        order: 2;
+      }
+
+      .lightbox-content img {
+        max-height: 60vh;
+        max-height: 60dvh;
+      }
+
+      .lightbox-nav-row .lightbox-counter {
+        position: static;
+        transform: none;
+        border: none;
+      }
+
+      .scroll-indicator {
+        bottom: 12px;
+        right: 8px;
+      }
+
+      /* On mobile: contact bar centered in overlay */
+      .contact-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0;
+      }
     }
 
-    .mobile-message p:last-child {
-      margin-bottom: 0;
+    /* Small mobile */
+    @media (max-width: 480px) {
+      .gallery-item {
+        width: calc(50% - 3px); /* 2 columns */
+      }
+
+      .about-intro {
+        font-size: 9.5vw !important;
+        line-height: 1.2 !important;
+      }
+
+      .item-title {
+        font-size: 13px;
+      }
+
+      .item-subtitle,
+      .item-description {
+        font-size: 12px;
+      }
+    }
+
+    /* Touch-friendly scrollbar on mobile */
+    @media (hover: none) and (pointer: coarse) {
+      section {
+        scrollbar-color: var(--line-color) transparent;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Mobile Screen -->
-  <div class="mobile-screen" id="mobile-screen">
-    <div class="mobile-content">
-      <div class="mobile-message">
-        <p><strong>Hey, you!</strong></p>
-	<p>I know you'd like to view this wonder of a website on your phone.</p>
-	<p>Trust me, I also want that experience for you. But...</p>
-	<p>it just can't happen.</p>
-        <p>Don't get me wrong: I tried my best. I really did. But I just... couldn't.</p>
-	<p>Maybe sometime in the future, I'll be able to, but right now...</p>
-	<p>if you can just view this on your PC or Mac, I promiseeeee, the experience is SO worth it. 🤭</p>
-        <p>It was... Made with 🧡!</p>
-        <p>Thanks for understanding!</p>
-      </div>
-    </div>
-  </div>
-
   <!-- Loading Screen -->
   <div class="loading-screen" id="loading-screen">
     <div class="loading-content">
@@ -896,16 +1119,21 @@
   <!-- Lightbox / Image Viewer (outside main-wrapper for proper fixed positioning) -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&#x2715;</button>
-    <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&#x2039;</button>
+    <!-- Desktop: prev/next stay absolute positioned. Mobile: they move into nav-row -->
+    <button class="lightbox-prev lightbox-desktop-nav" id="lightbox-prev" aria-label="Previous">&#x2039;</button>
+    <div class="lightbox-nav-row" id="lightbox-nav-row">
+      <button class="lightbox-prev-mobile" aria-label="Previous">&#x2039;</button>
+      <div class="lightbox-counter" id="lightbox-counter"></div>
+      <button class="lightbox-next-mobile" aria-label="Next">&#x203A;</button>
+    </div>
     <div class="lightbox-content">
       <img src="" alt="Gallery image" id="lightbox-img">
     </div>
-    <button class="lightbox-next" id="lightbox-next" aria-label="Next">&#x203A;</button>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
+    <button class="lightbox-next lightbox-desktop-nav" id="lightbox-next" aria-label="Next">&#x203A;</button>
+    <div class="lightbox-counter lightbox-desktop-counter" id="lightbox-counter-desktop"></div>
   </div>
 
   <div class="cursor-follower" id="cursorFollower"></div>
-  <div class="made-with-love" id="made-with-love">Made with 🧡</div>
 
   <!-- Photo carousel - fixed position, outside main-wrapper -->
   <div class="photo-carousel-wrapper" id="carousel-wrapper">
@@ -914,9 +1142,19 @@
 
   <!-- Main Content Wrapper (for swipe animation) -->
   <div class="main-wrapper" id="main-wrapper">
+
+  <!-- Mobile top bar: theme toggle + hamburger (visible only on mobile) -->
+  <div class="mobile-top-bar" id="mobile-top-bar">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle dark mode"></button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+
   <div class="layout">
     <!-- Left sidebar with navigation -->
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
       <div class="nav-links">
         <button class="nav-item active" data-target="about">About</button>
         <button class="nav-item" data-target="projects">Projects</button>
@@ -928,20 +1166,6 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
       </div>
 
-      <div class="contact-bar">
-        <div class="profile-photo">
-          <img src="profile-picture.png" alt="Osinachi Okpara">
-        </div>
-        <a href="mailto:okparaosi17@gmail.com">Email</a>
-        <span class="dot">&middot;</span>
-        <a href="https://linkedin.com/in/osinachiokpara" target="_blank" rel="noopener">LinkedIn</a>
-        <span class="dot">&middot;</span>
-        <a href="https://github.com/sin4ch" target="_blank" rel="noopener">GitHub</a>
-        <span class="dot">&middot;</span>
-        <a href="https://x.com/sin4ch" target="_blank" rel="noopener">X</a>
-        <span class="dot">&middot;</span>
-        <a href="https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view" target="_blank" rel="noopener">Resume</a>
-      </div>
     </nav>
 
     <!-- Right scrollable content -->
@@ -1477,38 +1701,30 @@
         </div>
       </section>
     </main>
+
   </div>
+
+  <!-- Contact bar — fixed bottom on all screen sizes -->
+  <div class="contact-bar" id="contact-bar">
+    <div class="profile-photo">
+      <img src="profile-picture.png" alt="Osinachi Okpara">
+    </div>
+    <div class="contact-links">
+      <a href="mailto:okparaosi17@gmail.com">Email</a>
+      <span class="dot">&middot;</span>
+      <a href="https://linkedin.com/in/osinachiokpara" target="_blank" rel="noopener">LinkedIn</a>
+      <span class="dot">&middot;</span>
+      <a href="https://github.com/sin4ch" target="_blank" rel="noopener">GitHub</a>
+      <span class="dot">&middot;</span>
+      <a href="https://x.com/sin4ch" target="_blank" rel="noopener">X</a>
+      <span class="dot">&middot;</span>
+      <a href="https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view" target="_blank" rel="noopener">Resume</a>
+    </div>
+  </div>
+
   </div> <!-- End main-wrapper -->
 
   <script>
-    // Mobile Detection
-    const mobileScreen = document.getElementById('mobile-screen');
-    
-    function isMobileDevice() {
-      // Check for touch capability and screen width
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isSmallScreen = window.innerWidth <= 800;
-      
-      // Also check user agent for mobile devices
-      const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      return (isTouchDevice && isSmallScreen) || mobileUserAgent;
-    }
-    
-    function checkMobile() {
-      if (isMobileDevice()) {
-        mobileScreen.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-      } else {
-        mobileScreen.classList.remove('visible');
-        document.body.style.overflow = '';
-      }
-    }
-    
-    // Check on load and resize
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
     // Loading Screen Logic
     const loadingScreen = document.getElementById('loading-screen');
     const loadingPercentage = document.getElementById('loading-percentage');
@@ -1732,16 +1948,13 @@
       
       // Show/hide carousel based on section
       const carouselWrapper = document.getElementById('carousel-wrapper');
-      const madeWithLove = document.querySelector('.made-with-love');
       if (carouselWrapper) {
         if (targetId === 'about') {
           carouselWrapper.classList.remove('hidden');
           carouselWrapper.classList.add('visible');
-          if (madeWithLove) madeWithLove.classList.add('visible');
         } else {
           carouselWrapper.classList.add('hidden');
           carouselWrapper.classList.remove('visible');
-          if (madeWithLove) madeWithLove.classList.remove('visible');
         }
       }
       
@@ -1829,25 +2042,41 @@
       showSection(targetSection, false);
     });
     
+    // Check if we're in mobile layout
+    function isMobileLayout() {
+      return window.innerWidth <= 768;
+    }
+
     // Position and load the photo carousel
     function positionCarousel() {
       const wrapper = document.getElementById('carousel-wrapper');
       const themeToggle = document.getElementById('themeToggle');
-      const contactBar = document.querySelector('.contact-bar');
-      
+      const contactBar = document.getElementById('contact-bar');
+
       if (!wrapper || !themeToggle || !contactBar) return;
-      
-      const toggleRect = themeToggle.getBoundingClientRect();
-      const contactRect = contactBar.getBoundingClientRect();
-      
-      // Position between theme toggle and contact bar with margins
-      const margin = 24;
-      const top = toggleRect.bottom + margin;
-      const bottom = contactRect.top - margin;
-      const height = bottom - top;
-      
-      wrapper.style.top = top + 'px';
-      wrapper.style.height = Math.max(height, 100) + 'px';
+
+      if (isMobileLayout()) {
+        // On mobile: position carousel in middle area of viewport
+        const viewportHeight = window.innerHeight;
+        const carouselHeight = Math.max(Math.round(viewportHeight * 0.22), 100);
+        const topPos = Math.round(viewportHeight * 0.50);
+        wrapper.style.bottom = 'auto';
+        wrapper.style.top = topPos + 'px';
+        wrapper.style.height = carouselHeight + 'px';
+      } else {
+        // Desktop: position between theme toggle and contact bar
+        wrapper.style.bottom = 'auto';
+        const toggleRect = themeToggle.getBoundingClientRect();
+        const contactRect = contactBar.getBoundingClientRect();
+
+        const margin = 24;
+        const top = toggleRect.bottom + margin;
+        const bottom = contactRect.top - margin;
+        const height = bottom - top;
+
+        wrapper.style.top = top + 'px';
+        wrapper.style.height = Math.max(height, 100) + 'px';
+      }
     }
     
     function loadPhotoCarousel() {
@@ -1890,68 +2119,100 @@
     }
 
 
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+
+    const carouselWrapperEl = document.getElementById('carousel-wrapper');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = sidebar.classList.toggle('menu-open');
+      hamburger.classList.toggle('open');
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+        // Hide carousel so it doesn't show through the overlay
+        if (carouselWrapperEl) carouselWrapperEl.style.display = 'none';
+      } else {
+        document.body.style.overflow = '';
+        if (carouselWrapperEl) carouselWrapperEl.style.display = '';
+      }
+    });
+
     // Click handler for navigation
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const targetId = item.dataset.target;
         showSection(targetId);
+        // Close hamburger menu on mobile after nav click
+        if (sidebar.classList.contains('menu-open')) {
+          sidebar.classList.remove('menu-open');
+          hamburger.classList.remove('open');
+          document.body.style.overflow = '';
+          if (carouselWrapperEl) carouselWrapperEl.style.display = '';
+        }
       });
     });
 
     // Theme toggle with localStorage persistence
     const themeToggle = document.getElementById('themeToggle');
-    
+    const themeToggleMobile = document.getElementById('themeToggleMobile');
+
     // Load saved theme preference
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
     }
-    
-    themeToggle.addEventListener('click', () => {
+
+    function toggleTheme() {
       document.body.classList.toggle('dark-mode');
-      // Save preference
       if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('theme', 'dark');
       } else {
         localStorage.setItem('theme', 'light');
       }
-    });
-
-    // Cursor follower with smooth trailing animation
-    const cursorFollower = document.getElementById('cursorFollower');
-    let mouseX = 0;
-    let mouseY = 0;
-    let followerX = 0;
-    let followerY = 0;
-    const ease = 0.15;
-
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-
-    function animateFollower() {
-      // Smooth easing - follower trails behind cursor
-      followerX += (mouseX - followerX) * ease;
-      followerY += (mouseY - followerY) * ease;
-      
-      cursorFollower.style.left = followerX + 'px';
-      cursorFollower.style.top = followerY + 'px';
-      
-      requestAnimationFrame(animateFollower);
     }
-    animateFollower();
 
-    // Add hover effect on interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursorFollower.classList.add('hovering');
+    themeToggle.addEventListener('click', toggleTheme);
+    if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
+
+    // Cursor follower with smooth trailing animation (desktop only)
+    const cursorFollower = document.getElementById('cursorFollower');
+    const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.matchMedia('(hover: none)').matches;
+
+    if (!isTouchDevice) {
+      let mouseX = 0;
+      let mouseY = 0;
+      let followerX = 0;
+      let followerY = 0;
+      const ease = 0.15;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
       });
-      el.addEventListener('mouseleave', () => {
-        cursorFollower.classList.remove('hovering');
+
+      function animateFollower() {
+        followerX += (mouseX - followerX) * ease;
+        followerY += (mouseY - followerY) * ease;
+
+        cursorFollower.style.left = followerX + 'px';
+        cursorFollower.style.top = followerY + 'px';
+
+        requestAnimationFrame(animateFollower);
+      }
+      animateFollower();
+
+      // Add hover effect on interactive elements
+      const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
+      interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursorFollower.classList.add('hovering');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursorFollower.classList.remove('hovering');
+        });
       });
-    });
+    }
 
     // Lightbox / Image Viewer
     const lightbox = document.getElementById('lightbox');
@@ -1960,7 +2221,8 @@
     const lightboxPrev = document.getElementById('lightbox-prev');
     const lightboxNext = document.getElementById('lightbox-next');
     const lightboxCounter = document.getElementById('lightbox-counter');
-    
+    const lightboxCounterDesktop = document.getElementById('lightbox-counter-desktop');
+
     let galleryImages = [];
     let currentImageIndex = 0;
 
@@ -1981,7 +2243,9 @@
       const img = galleryImages[currentImageIndex];
       lightboxImg.src = img.url;
       lightboxImg.alt = img.title || 'Gallery photo';
-      lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+      const counterText = `${currentImageIndex + 1} / ${galleryImages.length}`;
+      lightboxCounter.textContent = counterText;
+      if (lightboxCounterDesktop) lightboxCounterDesktop.textContent = counterText;
     }
 
     function showPrevImage() {
@@ -1998,6 +2262,12 @@
     lightboxClose.addEventListener('click', closeLightbox);
     lightboxPrev.addEventListener('click', showPrevImage);
     lightboxNext.addEventListener('click', showNextImage);
+
+    // Mobile lightbox nav buttons
+    const lightboxPrevMobile = document.querySelector('.lightbox-prev-mobile');
+    const lightboxNextMobile = document.querySelector('.lightbox-next-mobile');
+    if (lightboxPrevMobile) lightboxPrevMobile.addEventListener('click', showPrevImage);
+    if (lightboxNextMobile) lightboxNextMobile.addEventListener('click', showNextImage);
 
     // Close on backdrop click
     lightbox.addEventListener('click', (e) => {
@@ -2023,16 +2293,40 @@
       }
     });
 
-    // Add hover effect for lightbox buttons
-    const lightboxButtons = document.querySelectorAll('.lightbox-close, .lightbox-prev, .lightbox-next');
-    lightboxButtons.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursorFollower.classList.add('hovering');
+    // Add hover effect for lightbox buttons (desktop only)
+    if (!isTouchDevice) {
+      const lightboxButtons = document.querySelectorAll('.lightbox-close, .lightbox-prev, .lightbox-next');
+      lightboxButtons.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursorFollower.classList.add('hovering');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursorFollower.classList.remove('hovering');
+        });
       });
-      el.addEventListener('mouseleave', () => {
-        cursorFollower.classList.remove('hovering');
-      });
-    });
+    }
+
+    // Touch swipe support for lightbox
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const lightboxContent = document.querySelector('.lightbox-content');
+
+    lightboxContent.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    lightboxContent.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          showNextImage();
+        } else {
+          showPrevImage();
+        }
+      }
+    }, { passive: true });
 
     // Typewriter effect for About section
     const typewriterWords = ['Writing', 'MCP', 'Agents', 'LLMs', 'AI', 'Open Source', 'Python', 'AWS', 'Cloud'];
