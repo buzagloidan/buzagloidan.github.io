@@ -267,9 +267,11 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.8s ease-in-out, color 0.8s ease-in-out;
+      will-change: opacity;
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
+      padding-bottom: 52px;
     }
 
     section.active {
@@ -522,6 +524,7 @@
       height: 16px;
       stroke: var(--text-muted);
       animation: bounce 2s infinite;
+      will-change: transform;
     }
 
     @keyframes bounce {
@@ -562,6 +565,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      will-change: opacity;
     }
 
     .photo-carousel-wrapper.visible {
@@ -585,6 +589,7 @@
       width: max-content;
       height: 100%;
       animation: scroll-left 1200s linear infinite;
+      will-change: transform;
     }
 
     .photo-carousel-track:hover {
@@ -924,6 +929,7 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.8s ease-in-out;
+        will-change: opacity;
       }
 
       .sidebar.menu-open {
@@ -1097,6 +1103,14 @@
       .item-subtitle,
       .item-description {
         font-size: 12px;
+      }
+
+      .profile-photo {
+        display: none;
+      }
+
+      .contact-links {
+        margin-left: 0;
       }
     }
 
