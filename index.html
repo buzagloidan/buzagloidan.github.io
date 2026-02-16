@@ -66,6 +66,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
   <style>
+    /* ============================================
+       CSS TABLE OF CONTENTS
+       ============================================
+       1.  Reset & CSS Custom Properties
+       2.  Base & Typography
+       3.  Layout
+       4.  Navigation
+       5.  Contact Bar
+       6.  Sections & Content Items
+       7.  About Section
+       8.  Gallery
+       9.  Photo Carousel
+       10. Lightbox / Image Viewer
+       11. Theme Toggle & Dark Mode
+       12. Loading Screen
+       13. Scroll Indicator
+       14. Cursor Follower
+       15. Responsive — Tablet (≤1024px)
+       16. Responsive — Mobile (≤768px)
+       17. Responsive — Small Mobile (≤480px)
+       18. Responsive — Touch Devices
+       ============================================ */
+
+
+    /* ============================================
+       1. RESET & CSS CUSTOM PROPERTIES
+       ============================================ */
     * {
       margin: 0;
       padding: 0;
@@ -83,7 +110,10 @@
       --line-color: #c9b99a;
     }
 
-    /* Selection/highlight colors */
+
+    /* ============================================
+       2. BASE & TYPOGRAPHY
+       ============================================ */
     ::selection {
       background-color: var(--text-dark);
       color: var(--bg-light);
@@ -101,45 +131,42 @@
       background-color: var(--bg-light);
     }
 
-    /* Cursor follower circle - hidden on touch devices */
-    .cursor-follower {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #ffead3;
-      position: fixed;
-      pointer-events: none;
-      z-index: 99999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
-      mix-blend-mode: difference;
-    }
-
-    .cursor-follower.hovering {
-      width: 30px;
-      height: 30px;
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-      .cursor-follower {
-        display: none !important;
-      }
-    }
-
     body {
       font-family: 'Geist Mono';
-      background-color: var(--bg-light);
       color: var(--text-dark);
       line-height: 1.6;
       transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
     }
 
-    /* Transition for all elements using theme colors */
     *, *::before, *::after {
       transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out, border-color 0.8s ease-in-out;
     }
 
-    /* Main layout */
+    a {
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+
+    /* ============================================
+       3. LAYOUT
+       ============================================ */
+    .main-wrapper {
+      min-height: 100vh;
+      min-height: 100dvh;
+      transform: translateY(100vh);
+      transform: translateY(100dvh);
+      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .main-wrapper.visible {
+      transform: translateY(0);
+    }
+
     .layout {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -150,7 +177,6 @@
       gap: var(--spacing);
     }
 
-    /* Default: sidebar takes 1 column, content takes 3 columns */
     .sidebar {
       grid-column: 1 / 2;
       display: flex;
@@ -166,13 +192,78 @@
       transition: grid-column 0.3s ease-in-out;
     }
 
+
+    /* ============================================
+       4. NAVIGATION
+       ============================================ */
     .nav-links {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
-    /* Contact bar — fixed bottom bar on all screen sizes */
+    .nav-item {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: inherit;
+      padding: 0;
+      width: fit-content;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      color: var(--text-dark);
+    }
+
+    .nav-item.active {
+      color: var(--text-dark);
+    }
+
+    .mobile-top-bar {
+      display: none;
+    }
+
+    .hamburger {
+      display: none;
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .hamburger-line {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-dark);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .hamburger.open .hamburger-line:first-child {
+      transform: translateY(4px) rotate(45deg);
+    }
+
+    .hamburger.open .hamburger-line:last-child {
+      transform: translateY(-4px) rotate(-45deg);
+    }
+
+
+    /* ============================================
+       5. CONTACT BAR
+       ============================================ */
     .contact-bar {
       position: fixed;
       bottom: 0;
@@ -229,31 +320,10 @@
       font-size: 11px;
     }
 
-    .nav-item {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: color 0.2s ease;
-      background: none;
-      border: none;
-      text-align: left;
-      font-family: inherit;
-      padding: 0;
-      width: fit-content;
-      white-space: nowrap;
-    }
 
-    .nav-item:hover {
-      color: var(--text-dark);
-    }
-
-    .nav-item.active {
-      color: var(--text-dark);
-    }
-
-    /* Sections - stacked with fade transitions */
+    /* ============================================
+       6. SECTIONS & CONTENT ITEMS
+       ============================================ */
     section {
       position: absolute;
       top: 0;
@@ -270,11 +340,39 @@
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       padding-bottom: 52px;
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
     }
 
     section.active {
       opacity: 1;
       visibility: visible;
+    }
+
+    section:hover {
+      scrollbar-color: var(--line-color) transparent;
+    }
+
+    section::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    section::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    section::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 3px;
+      transition: background 0.3s ease;
+    }
+
+    section:hover::-webkit-scrollbar-thumb {
+      background: var(--line-color);
+    }
+
+    section::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
     }
 
     .section-description {
@@ -289,45 +387,6 @@
       font-weight: 600;
     }
 
-    /* About intro - responsive sizing */
-    .about-intro {
-      font-size: clamp(18px, 3.5vw, 54px);
-      overflow: hidden;
-    }
-
-    /* Ensure About section never scrolls on desktop */
-    #about {
-      overflow: hidden !important;
-    }
-
-    .about-intro a {
-      color: var(--text-dark);
-      text-decoration: none;
-    }
-
-    .typewriter-text {
-      font-family: 'Instrument Serif';
-      font-size: inherit;
-      font-weight: 400;
-      color: var(--text-dark);
-    }
-
-    .typewriter-cursor {
-      font-family: 'Instrument Serif';
-      font-size: inherit;
-      font-weight: 400;
-      color: var(--text-dark);
-      animation: blink 0.7s infinite;
-      margin-left: 2px;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-
-    /* Items list */
     .items {
       display: flex;
       flex-direction: column;
@@ -355,7 +414,6 @@
       border-top: none;
     }
 
-    /* Extra spacing before year sections (non-empty meta = new year group) */
     .item:has(.item-meta:not(:empty)) + .item:has(.item-meta:not(:empty)) {
       margin-top: 0;
     }
@@ -364,12 +422,8 @@
       margin-top: 24px;
     }
 
-    /* Ensure content stays in column 2 even when meta is empty */
     .item-content {
       grid-column: 2;
-    }
-
-    .item-content {
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -387,7 +441,6 @@
       color: var(--text-muted);
     }
 
-    /* Project-specific hierarchy styles */
     .item-description {
       font-size: 13px;
       color: var(--text-dark-80);
@@ -431,128 +484,100 @@
       margin-top: 4px;
     }
 
-    /* Dark mode toggle button */
-    .theme-toggle {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: none;
-      background-color: var(--text-dark);
-      cursor: pointer;
-      transition: all 0.5s ease-in-out;
-      margin-top: 16px;
-      flex-shrink: 0;
+
+    /* ============================================
+       7. ABOUT SECTION
+       ============================================ */
+    .about-intro {
+      font-size: clamp(18px, 3.5vw, 54px);
+      overflow: hidden;
     }
 
-    /* Dark mode styles */
-    body.dark-mode {
-      --bg-light: #121212;
-      --text-dark: #ffead3;
-      --text-muted: #a89880;
-      --text-dark-80: #d4c1ad;
-      --text-dark-90: #e9d6c0;
-      --text-muted-70: #7d7260;
-      --line-color: #3d3d3d;
+    #about {
+      overflow: hidden !important;
     }
 
-    /* Custom scrollbar - hidden by default, visible on hover */
-    section {
-      scrollbar-width: thin;
-      scrollbar-color: transparent transparent;
-    }
-
-    section:hover {
-      scrollbar-color: var(--line-color) transparent;
-    }
-
-    section::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    section::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    section::-webkit-scrollbar-thumb {
-      background: transparent;
-      border-radius: 3px;
-      transition: background 0.3s ease;
-    }
-
-    section:hover::-webkit-scrollbar-thumb {
-      background: var(--line-color);
-    }
-
-    section::-webkit-scrollbar-thumb:hover {
-      background: var(--text-muted);
-    }
-
-    /* Scroll indicator arrow */
-    .scroll-indicator {
-      position: absolute;
-      bottom: 56px;
-      right: 12px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      z-index: 10;
-      background: var(--bg-light);
-      border: 1px solid var(--line-color);
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      pointer-events: auto;
-    }
-
-    .scroll-indicator:hover {
-      border-color: var(--text-muted);
-    }
-
-    .scroll-indicator.visible {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .scroll-indicator svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--text-muted);
-      animation: bounce 2s infinite;
-      will-change: transform;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(3px);
-      }
-      60% {
-        transform: translateY(1px);
-      }
-    }
-
-    /* Links */
-    a {
+    .about-intro a {
       color: var(--text-dark);
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* About section link - always underlined */
     .about-static a {
       text-decoration: underline;
     }
 
-    /* Photo carousel - full bleed, in sidebar */
+    .typewriter-text {
+      font-family: 'Instrument Serif';
+      font-size: inherit;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+
+    .typewriter-cursor {
+      font-family: 'Instrument Serif';
+      font-size: inherit;
+      font-weight: 400;
+      color: var(--text-dark);
+      animation: blink 0.7s infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+
+    /* ============================================
+       8. GALLERY
+       ============================================ */
+    #gallery {
+      position: absolute;
+      left: 0;
+      right: 0;
+      overflow-x: hidden;
+    }
+
+    #gallery .bento-grid {
+      width: 100%;
+    }
+
+    .bento-grid {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .gallery-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      border-radius: 0;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+      z-index: 1;
+    }
+
+    .gallery-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+
+    /* ============================================
+       9. PHOTO CAROUSEL
+       ============================================ */
     .photo-carousel-wrapper {
       position: fixed;
       left: 0;
@@ -600,8 +625,7 @@
       opacity: 1;
     }
 
-    .photo-carousel.loading,
-    .photo-carousel .error {
+    .photo-carousel.loading, .photo-carousel .error {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -610,52 +634,10 @@
       height: 100%;
     }
 
-    /* Bento grid for gallery - independent columns */
-    .bento-grid {
-      display: flex;
-      gap: 6px;
-      width: 100%;
-    }
 
-    .gallery-column {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .gallery-item {
-      overflow: hidden;
-      border-radius: 0;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .gallery-item:hover {
-      transform: scale(1.02);
-      z-index: 1;
-    }
-
-    .gallery-item img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    /* Gallery section */
-    #gallery {
-      position: absolute;
-      left: 0;
-      right: 0;
-      overflow-x: hidden;
-    }
-
-    #gallery .bento-grid {
-      width: 100%;
-    }
-
-    /* Lightbox / Image Viewer */
+    /* ============================================
+       10. LIGHTBOX / IMAGE VIEWER
+       ============================================ */
     .lightbox {
       position: fixed;
       top: 0;
@@ -692,9 +674,7 @@
       object-fit: contain;
     }
 
-    .lightbox-close,
-    .lightbox-prev,
-    .lightbox-next {
+    .lightbox-close, .lightbox-prev, .lightbox-next {
       position: absolute;
       background: none;
       border: 1px solid #ffead3;
@@ -711,9 +691,7 @@
       font-family: 'Geist Mono';
     }
 
-    .lightbox-close:hover,
-    .lightbox-prev:hover,
-    .lightbox-next:hover {
+    .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
       background-color: #ffead3;
       color: #121212;
     }
@@ -723,8 +701,7 @@
       right: var(--spacing);
     }
 
-    .lightbox-prev,
-    .lightbox-next {
+    .lightbox-prev, .lightbox-next {
       top: 50%;
       transform: translateY(-50%);
     }
@@ -737,7 +714,6 @@
       right: var(--spacing);
     }
 
-    /* Nav row for mobile lightbox (prev/counter/next above image) */
     .lightbox-nav-row {
       display: none;
       align-items: center;
@@ -747,13 +723,10 @@
       margin-bottom: 16px;
     }
 
-    /* Mobile-only lightbox buttons hidden on desktop */
-    .lightbox-prev-mobile,
-    .lightbox-next-mobile {
+    .lightbox-prev-mobile, .lightbox-next-mobile {
       display: none;
     }
 
-    /* Counter display */
     .lightbox-counter {
       position: absolute;
       bottom: var(--spacing);
@@ -765,7 +738,36 @@
       text-transform: uppercase;
     }
 
-    /* Loading Screen Styles */
+
+    /* ============================================
+       11. THEME TOGGLE & DARK MODE
+       ============================================ */
+    .theme-toggle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: none;
+      background-color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.5s ease-in-out;
+      margin-top: 16px;
+      flex-shrink: 0;
+    }
+
+    body.dark-mode {
+      --bg-light: #121212;
+      --text-dark: #ffead3;
+      --text-muted: #a89880;
+      --text-dark-80: #d4c1ad;
+      --text-dark-90: #e9d6c0;
+      --text-muted-70: #7d7260;
+      --line-color: #3d3d3d;
+    }
+
+
+    /* ============================================
+       12. LOADING SCREEN
+       ============================================ */
     .loading-screen {
       position: fixed;
       top: 0;
@@ -801,81 +803,109 @@
       letter-spacing: 0.1em;
     }
 
-    /* Main wrapper for swipe animation */
-    .main-wrapper {
-      min-height: 100vh;
-      min-height: 100dvh;
-      transform: translateY(100vh);
-      transform: translateY(100dvh);
-      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-    }
-
-    .main-wrapper.visible {
-      transform: translateY(0);
-    }
 
     /* ============================================
-       RESPONSIVE BREAKPOINTS
+       13. SCROLL INDICATOR
        ============================================ */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 56px;
+      right: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 10;
+      background: var(--bg-light);
+      border: 1px solid var(--line-color);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: auto;
+    }
 
-    /* Gallery responsive — column count handled by JS */
+    .scroll-indicator:hover {
+      border-color: var(--text-muted);
+    }
 
-    /* Tablet: 2-column layout */
+    .scroll-indicator.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-indicator svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      animation: bounce 2s infinite;
+      will-change: transform;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(3px); }
+      60% { transform: translateY(1px); }
+    }
+
+
+    /* ============================================
+       14. CURSOR FOLLOWER
+       ============================================ */
+    .cursor-follower {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #ffead3;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-follower.hovering {
+      width: 30px;
+      height: 30px;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .cursor-follower {
+        display: none !important;
+      }
+    }
+
+
+    /* ============================================
+       15. RESPONSIVE - TABLET (max-width: 1024px)
+       ============================================ */
     @media (max-width: 1024px) {
       .layout {
         grid-template-columns: 1fr 2fr;
       }
+
       .sidebar {
         grid-column: 1 / 2;
       }
+
       .content {
         grid-column: 2 / 3;
       }
     }
 
-    /* ---- Mobile top bar with theme toggle + hamburger ---- */
-    .mobile-top-bar {
-      display: none;
-    }
 
-    .hamburger {
-      display: none;
-      width: 28px;
-      height: 28px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .hamburger-line {
-      display: block;
-      width: 100%;
-      height: 2px;
-      background-color: var(--text-dark);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-
-    .hamburger.open .hamburger-line:first-child {
-      transform: translateY(4px) rotate(45deg);
-    }
-
-    .hamburger.open .hamburger-line:last-child {
-      transform: translateY(-4px) rotate(-45deg);
-    }
-
-    /* Mobile: stacked layout */
+    /* ============================================
+       16. RESPONSIVE - MOBILE (max-width: 768px)
+       ============================================ */
     @media (max-width: 768px) {
       html, body {
         overflow: auto;
         height: auto;
       }
 
-      /* Show mobile top bar */
       .mobile-top-bar {
         display: flex;
         align-items: center;
@@ -905,12 +935,10 @@
         padding-top: calc(var(--spacing) + 36px);
       }
 
-      /* Hide sidebar theme toggle (it's in top bar now) */
       .nav-links .theme-toggle {
         display: none;
       }
 
-      /* Sidebar = full-screen overlay */
       .sidebar {
         position: fixed;
         inset: 0;
@@ -962,7 +990,6 @@
         min-height: 0;
       }
 
-      /* About section can scroll on mobile */
       #about {
         overflow-y: auto !important;
       }
@@ -978,7 +1005,6 @@
         margin-bottom: 20px;
       }
 
-      /* Stack items vertically on mobile */
       .item {
         grid-template-columns: 1fr;
         gap: 4px;
@@ -992,12 +1018,10 @@
         display: none;
       }
 
-      /* Hide carousel on mobile */
       .photo-carousel-wrapper {
         display: none !important;
       }
 
-      /* Lightbox — nav above image on mobile */
       .lightbox {
         flex-direction: column;
         justify-content: center;
@@ -1005,13 +1029,10 @@
         padding: 60px 16px 24px;
       }
 
-      /* Hide desktop-only lightbox nav */
-      .lightbox-desktop-nav,
-      .lightbox-desktop-counter {
+      .lightbox-desktop-nav, .lightbox-desktop-counter {
         display: none !important;
       }
 
-      /* Show mobile nav row — below the image */
       .lightbox-nav-row {
         display: flex;
         order: 3;
@@ -1026,8 +1047,7 @@
         font-size: 18px;
       }
 
-      .lightbox-prev-mobile,
-      .lightbox-next-mobile {
+      .lightbox-prev-mobile, .lightbox-next-mobile {
         background: none;
         border: 1px solid #ffead3;
         color: #ffead3;
@@ -1043,8 +1063,7 @@
         transition: background-color 0.2s ease, color 0.2s ease;
       }
 
-      .lightbox-prev-mobile:hover,
-      .lightbox-next-mobile:hover {
+      .lightbox-prev-mobile:hover, .lightbox-next-mobile:hover {
         background-color: #ffead3;
         color: #121212;
       }
@@ -1069,7 +1088,6 @@
         right: 8px;
       }
 
-      /* On mobile: contact bar centered in overlay */
       .contact-bar {
         flex-wrap: wrap;
         justify-content: center;
@@ -1077,7 +1095,10 @@
       }
     }
 
-    /* Small mobile */
+
+    /* ============================================
+       17. RESPONSIVE - SMALL MOBILE (max-width: 480px)
+       ============================================ */
     @media (max-width: 480px) {
       #gallery {
         padding-left: 0;
@@ -1093,8 +1114,7 @@
         font-size: 13px;
       }
 
-      .item-subtitle,
-      .item-description {
+      .item-subtitle, .item-description {
         font-size: 12px;
       }
 
@@ -1107,7 +1127,10 @@
       }
     }
 
-    /* Touch-friendly scrollbar on mobile */
+
+    /* ============================================
+       18. RESPONSIVE - TOUCH DEVICES
+       ============================================ */
     @media (hover: none) and (pointer: coarse) {
       section {
         scrollbar-color: var(--line-color) transparent;
@@ -1116,6 +1139,7 @@
   </style>
 </head>
 <body>
+
   <!-- Loading Screen -->
   <div class="loading-screen" id="loading-screen">
     <div class="loading-content">
@@ -1123,10 +1147,9 @@
     </div>
   </div>
 
-  <!-- Lightbox / Image Viewer (outside main-wrapper for proper fixed positioning) -->
+  <!-- Lightbox -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&#x2715;</button>
-    <!-- Desktop: prev/next stay absolute positioned. Mobile: they move into nav-row -->
     <button class="lightbox-prev lightbox-desktop-nav" id="lightbox-prev" aria-label="Previous">&#x2039;</button>
     <div class="lightbox-nav-row" id="lightbox-nav-row">
       <button class="lightbox-prev-mobile" aria-label="Previous">&#x2039;</button>
@@ -1140,613 +1163,640 @@
     <div class="lightbox-counter lightbox-desktop-counter" id="lightbox-counter-desktop"></div>
   </div>
 
+  <!-- Cursor Follower -->
   <div class="cursor-follower" id="cursorFollower"></div>
 
-  <!-- Photo carousel - fixed position, outside main-wrapper -->
+  <!-- Photo Carousel -->
   <div class="photo-carousel-wrapper" id="carousel-wrapper">
     <div class="photo-carousel" id="photo-carousel"></div>
   </div>
 
-  <!-- Main Content Wrapper (for swipe animation) -->
+  <!-- Main Content -->
   <div class="main-wrapper" id="main-wrapper">
-
-  <!-- Mobile top bar: theme toggle + hamburger (visible only on mobile) -->
-  <div class="mobile-top-bar" id="mobile-top-bar">
-    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle dark mode"></button>
-    <button class="hamburger" id="hamburger" aria-label="Open menu">
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </button>
-  </div>
-
-  <div class="layout">
-    <!-- Left sidebar with navigation -->
-    <nav class="sidebar" id="sidebar">
-      <div class="nav-links">
-        <button class="nav-item active" data-target="about">About</button>
-        <button class="nav-item" data-target="projects">Projects</button>
-        <button class="nav-item" data-target="opensource">Open Source</button>
-        <button class="nav-item" data-target="writing">Writing</button>
-        <button class="nav-item" data-target="talks">Speaking & Hosting</button>
-        <button class="nav-item" data-target="gallery">Gallery</button>
-        <button class="nav-item" data-target="experience">Experience</button>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
-      </div>
-
-    </nav>
-
-    <!-- Right scrollable content -->
-    <main class="content">
-      <!-- Scroll indicator arrow -->
-      <div class="scroll-indicator" id="scroll-indicator">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </div>
-
-      <!-- ABOUT -->
-       <section id="about" class="active">
-        <div class="section-description about-intro">
-		Hi, I'm Osinachi Okpara, a software engineer, developer advocate, and <a href="https://builder.aws.com/community/community-builders" target="_blank" rel="noopener">AWS Community Builder</a> passionate about <span class="typewriter-text" id="typewriter-text"></span><span class="typewriter-cursor">|</span>
-        </div>
-      </section>
-
-      <!-- PROJECTS -->
-      <section id="projects">
-        <div class="section-description">
-          Selected projects.
-        </div>
-        <div class="items">
-          <div class="item">
-            <div class="item-meta">2025</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sin4ch/mono-mcp" target="_blank" rel="noopener">Mono Banking MCP Server</a></div>
-              <div class="item-description">MCP server for Nigerian banking operations via Mono Open Banking API</div>
-              <div class="item-tools">Python, FastMCP, PostgreSQL, Claude</div>
-              <div class="item-stats">53 Stars · 11 Forks</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sin4ch/qgjob" target="_blank" rel="noopener">QualGent Job Orchestrator</a></div>
-              <div class="item-description">Production-ready job orchestration system for AppWright automated tests on BrowserStack and GitHub Actions runners</div>
-              <div class="item-tools">Python, Click, FastAPI, Redis, PostgreSQL, Docker, GitHub Actions</div>
-              <div class="item-stats">2 Stars · 1 Fork</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sin4ch/aws-innovation-sb-api" target="_blank" rel="noopener">AWS Innovation Sandbox API</a></div>
-              <div class="item-description">FastAPI application for managing AWS Innovation Sandbox accounts and resources</div>
-              <div class="item-tools">Python, FastAPI, Boto3, AWS STS, httpx</div>
-              <div class="item-stats">1 Star · 1 Fork</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sin4ch/quick-face-sort" target="_blank" rel="noopener">Quick Face Sort</a></div>
-              <div class="item-description">Scan a folder with media and sort out images & videos based on reference images</div>
-              <div class="item-tools">Python, Terraform, AWS Rekognition, AWS Lambda, S3</div>
-              <div class="item-stats">5 Stars · 1 Fork</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/sin4ch/resume-to-latex" target="_blank" rel="noopener">Resume to LaTeX</a></div>
-              <div class="item-description">Convert resumes to clean LaTeX format using AI</div>
-              <div class="item-tools">Python, FastAPI, React, Tailwind CSS, Gemini</div>
-              <div class="item-stats">7 Stars · 1 Fork</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- OPEN SOURCE -->
-      <section id="opensource">
-        <div class="section-description">
-          Contributions to open source projects.
-        </div>
-        <div class="items">
-          <div class="item">
-            <div class="item-meta">2026</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/6712" target="_blank" rel="noopener">Improve MCP documentation clarity about config file location</a></div>
-              <div class="item-subtitle">Anomaly Co · OpenCode</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp/issues/721" target="_blank" rel="noopener">Add OpenCode MCP configuration to README</a></div>
-              <div class="item-subtitle">Google · Chrome DevTools MCP</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">2025</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/anomalyco/opencode/pull/2707" target="_blank" rel="noopener">Enhance theme documentation with links to original sources</a></div>
-              <div class="item-subtitle">Anomaly Co · OpenCode</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/2625" target="_blank" rel="noopener">Fix incomplete statement in config documentation</a></div>
-              <div class="item-subtitle">Anomaly Co · OpenCode</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/browser-use/browser-use/pull/2998" target="_blank" rel="noopener">Add comprehensive MCP Server documentation</a></div>
-              <div class="item-subtitle">Browser Use (YC W25) · Browser Use</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/truffle-ai/dexto/issues/309" target="_blank" rel="noopener">Create llms.txt and add View as Markdown functionality</a></div>
-              <div class="item-subtitle">Truffle AI (YC W25) · Dexto</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/aws-solutions/innovation-sandbox-on-aws/issues/19" target="_blank" rel="noopener">Enable automatic programmatic authentication for third-party APIs</a></div>
-              <div class="item-subtitle">AWS · Innovation Sandbox</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1357" target="_blank" rel="noopener">Implement Copy Page as Markdown and View as Markdown in docs</a></div>
-              <div class="item-subtitle">Slack · Bolt Python</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1353" target="_blank" rel="noopener">Propose using uv instead of pip for Python guides</a></div>
-              <div class="item-subtitle">Slack · Bolt Python</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://github.com/SINTEF/ci-cd/pull/357" target="_blank" rel="noopener">Fix GitHub environment variables issue across workflow files</a></div>
-              <div class="item-subtitle">SINTEF · CI/CD</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- WRITING -->
-      <section id="writing">
-        <div class="section-description">
-          Articles on cloud infrastructure, DevOps, and AI agents.
-        </div>
-        <div class="items">
-          <div class="item">
-            <div class="item-meta">2025</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://sin4ch1.substack.com/p/llms-might-not-be-human-level-intelligent" target="_blank" rel="noopener">LLMs might not be human-level intelligent, but they sure are human</a></div>
-              <div class="item-subtitle">Oct 1</div>
-              <div class="item-tags">AI · LLMS · OPINION</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/building-a-simple-exchange-rate-mcp-server-using-fastmcp-c87d7a454545" target="_blank" rel="noopener">Building a Simple Exchange Rate MCP Server using FastMCP</a></div>
-              <div class="item-subtitle">Sep 29</div>
-              <div class="item-tags">AI · MCP · PYTHON · TUTORIAL</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://sin4ch1.substack.com/p/the-need-for-compromise-in-innovation" target="_blank" rel="noopener">The need for compromise in innovation communication in the age of AI</a></div>
-              <div class="item-subtitle">Sep 11</div>
-              <div class="item-tags">AI · INNOVATION · OPINION</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://sin4ch1.substack.com/p/were-the-ones-holding-our-tech-back" target="_blank" rel="noopener">We might just be the ones holding our tech back</a></div>
-              <div class="item-subtitle">Aug 27</div>
-              <div class="item-tags">TECH · OPINION</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/understanding-model-context-protocol-mcp-2f8f0e7e9240" target="_blank" rel="noopener">Understanding Model Context Protocol (MCP)</a></div>
-              <div class="item-subtitle">Aug 6</div>
-              <div class="item-tags">AI · MCP · LLMS</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/deploying-a-fastapi-number-classification-api-with-docker-nginx-and-aws-ec2-fe2358ef7835" target="_blank" rel="noopener">Deploying a FastAPI Number Classification API with Docker, Nginx, and AWS EC2</a></div>
-              <div class="item-subtitle">May 3</div>
-              <div class="item-tags">CLOUD · AWS · DEVOPS · DOCKER · TUTORIAL</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/why-tech-innovation-seems-slower-these-days-fe79b14d0f99" target="_blank" rel="noopener">Why Tech Innovation Seems Slower These Days</a></div>
-              <div class="item-subtitle">Apr 18</div>
-              <div class="item-tags">TECH · INNOVATION · OPINION</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.everythingdevops.dev/blog/understanding-ssh-and-ssh-keys" target="_blank" rel="noopener">Understanding SSH and SSH Keys</a></div>
-              <div class="item-subtitle">Feb 25</div>
-              <div class="item-tags">DEVOPS · LINUX · TUTORIAL</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/hng-stage-0-serving-a-simple-webpage-through-nginx-on-an-amazon-ec2-instance-c885225c3bd7" target="_blank" rel="noopener">Serving A Simple Webpage Through NGINX On An Amazon EC2 Instance</a></div>
-              <div class="item-subtitle">Jan 31</div>
-              <div class="item-tags">CLOUD · AWS · NGINX · TUTORIAL</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">2024</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/infrastructure-is-the-future-of-ai-72fd31dd7c03" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
-              <div class="item-subtitle">Dec 7</div>
-              <div class="item-tags">AI · CLOUD · INFRASTRUCTURE</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://medium.com/@sin4ch/road-to-my-aws-community-builder-application-in-january-2025-f4626330076d" target="_blank" rel="noopener">Road to My AWS Community Builder Application</a></div>
-              <div class="item-subtitle">Oct 20</div>
-              <div class="item-tags">AWS · CLOUD · CAREER</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TALKS & HOSTING -->
-      <section id="talks">
-        <div class="section-description">
-          Speaking and hosting engagements at industry events and conferences.
-        </div>
-        <div class="items">
-          <!-- 2025 -->
-          <div class="item">
-            <div class="item-meta">2025</div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://gdg.community.dev/events/details/google-gdg-on-campus-university-of-benin-benin-nigeria-presents-building-a-career-from-open-source-contribution-2025-11-13/" target="_blank" rel="noopener">Building a Career from Open Source Contribution</a></div>
-              <div class="item-subtitle">GDG on Campus UNIBEN</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/awscloudsecwestafrica_awscommunityday-genai-awscd25-activity-7378412697677107201-ASBh" target="_blank" rel="noopener">AI, Cloud, and the African Hustle: Turning Challenges into Opportunities</a></div>
-              <div class="item-subtitle">AWS Community Day West Africa 2025</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1958408726601453857" target="_blank" rel="noopener">Arthurite x AWS GenAI 2025</a></div>
-              <div class="item-subtitle">Arthurite Integrated</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/Geektutor/status/1953746378267509132" target="_blank" rel="noopener">From Local to Global: Real Stories of Landing Global Internships</a></div>
-              <div class="item-subtitle">X Space</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1941218347275673925" target="_blank" rel="noopener">Building an Impactful Tech Career</a></div>
-              <div class="item-subtitle">X Space with Julian Duru</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/thedevopsdojo/status/1935989233115648313" target="_blank" rel="noopener">Remote DevOps Work: Real talk & Tips</a></div>
-              <div class="item-subtitle">DevOps Dojo</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/NexaScaleHQ/status/1933898503735885951" target="_blank" rel="noopener">NexaScale 2nd Anniversary: Level Up or Get Left Behind</a></div>
-              <div class="item-subtitle">NexaScale</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title">Introduction to RESTful APIs with FastAPI</div>
-              <div class="item-subtitle">NexaScale</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title">Why Tech Matters</div>
-              <div class="item-subtitle">DheGroup Birthday Event</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://gdg.community.dev/events/details/google-gdg-on-campus-university-of-ilorin-ilorin-nigeria-presents-build-with-ai-2025/" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
-              <div class="item-subtitle">Build with AI 2025, GDG on Campus University of Ilorin</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.youtube.com/live/h-9Ph-J7Bh8" target="_blank" rel="noopener">Ultimate Beginner Guide to Acing the AWS CCP Exam</a></div>
-              <div class="item-subtitle">Cloud with Anne Academy</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1895475604759449713" target="_blank" rel="noopener">Breaking into Tech (AMA)</a></div>
-              <div class="item-subtitle">TRIIBE Network</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1883135211556475122" target="_blank" rel="noopener">Getting Started in Cloud</a></div>
-              <div class="item-subtitle">AWS Cloud Clubs, FUTO</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1877432769967423878" target="_blank" rel="noopener">Guide to Joining the AWS Community Builder's Program</a></div>
-              <div class="item-subtitle">DevOps Conclave</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <!-- 2024 -->
-          <div class="item">
-            <div class="item-meta">2024</div>
-            <div class="item-content">
-              <div class="item-title">Tech Vision Board for 2025</div>
-              <div class="item-subtitle">The Virtual Assistant Hub</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1865479789089349976" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
-              <div class="item-subtitle">DevFest Benin, GDG Benin</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1862059187137573097" target="_blank" rel="noopener">How to Build a Personal Brand to Stand Out</a></div>
-              <div class="item-subtitle">Assem Lucem, NFCS UNIBEN</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1856038008257986582" target="_blank" rel="noopener">Navigating Your Career</a></div>
-              <div class="item-subtitle">ACES UNIBEN Tech Week</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title">ACES Software Developer Club Launch</div>
-              <div class="item-subtitle">ACES, UNIBEN</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_october-was-amazing-who-am-i-kidding-activity-7257994792989560832-wO2U" target="_blank" rel="noopener">The Young and Thriving Youth Conference (AMA)</a></div>
-              <div class="item-subtitle">SCIWA</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_october-was-amazing-who-am-i-kidding-activity-7257994792989560832-wO2U" target="_blank" rel="noopener">Maximize Technology to Supercharge YOU</a></div>
-              <div class="item-subtitle">UNIBEN Tech Wave 2.0</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/awssecwestafri/status/1837146709333336118" target="_blank" rel="noopener">The Human Side of Cloud Innovation: Everyday Solutions with AWS</a></div>
-              <div class="item-subtitle">AWS Cloud Security User Group West Africa</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/sin4ch/status/1830628464602251310" target="_blank" rel="noopener">Leveraging Global Opportunities to Build your Tech Career</a></div>
-              <div class="item-subtitle">Effjays Tech Hub</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://x.com/thecloudcrowdng/status/1805239437082697827" target="_blank" rel="noopener">What, Really, is the Cloud and Why Should I Care?</a></div>
-              <div class="item-subtitle">The Cloud Crowd</div>
-              <div class="item-tags">HOST</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_bfff-activity-7197109513995374592-GkcX" target="_blank" rel="noopener">AMA Session on The Future of Technology</a></div>
-              <div class="item-subtitle">Blockchain For Financial Freedom, UNIBEN</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title">Taking Your Business to the Global Stage</div>
-              <div class="item-subtitle">Path-Finders Christian Assembly</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_navigating-into-tech-doesnt-have-to-be-hard-activity-7171934520479236096--EWi" target="_blank" rel="noopener">Upskilling: The New Currency in the World of Work</a></div>
-              <div class="item-subtitle">Cenfortech TechSkillUpEdo</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta"></div>
-            <div class="item-content">
-              <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_yesterday-was-probably-up-there-among-the-activity-7156958483416784896-TIks" target="_blank" rel="noopener">How to Leverage Social Media for Career Growth</a></div>
-              <div class="item-subtitle">LinkedIn Local Benin</div>
-              <div class="item-tags">SPEAKER</div>
-            </div>
-          </div>
-        </div>
-      </section>
-       
-       <!-- GALLERY -->
-       <section id="gallery">
-         <div class="section-description">
-           Personal gallery.
-         </div>
-         <div class="bento-grid" id="gallery-grid"></div>
-       </section>
- 
-       <!-- EXPERIENCE -->
-       <section id="experience">
-        <div class="section-description">
-          Professional experience in developer advocacy, community building, and DevOps.
-        </div>
-        <div class="items">
-          <div class="item">
-            <div class="item-meta">Oct 2025 - Present</div>
-            <div class="item-content">
-              <div class="item-title">Developer Advocate</div>
-              <div class="item-subtitle">Hackmamba · San Francisco, CA, US</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">Jan 2024 - Present</div>
-            <div class="item-content">
-              <div class="item-title">Developer Advocate & Technical Programs Lead</div>
-              <div class="item-subtitle">NexaScale · Washington, DC, US</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">Jan 2025 - Feb 2025</div>
-            <div class="item-content">
-              <div class="item-title">Developer Advocate</div>
-              <div class="item-subtitle">Learn To Cloud · New York, US</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">2024 - Present</div>
-            <div class="item-content">
-              <div class="item-title">Founder & Community Architect</div>
-              <div class="item-subtitle">The Cloud Crowd & DevOps Conclave · Lagos, NG</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="item-meta">Jun 2024 - Jul 2024</div>
-            <div class="item-content">
-              <div class="item-title">DevOps Engineer Intern</div>
-              <div class="item-subtitle">Hotels.ng · Lagos, NG</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-  </div>
-
-  <!-- Contact bar — fixed bottom on all screen sizes -->
-  <div class="contact-bar" id="contact-bar">
-    <div class="profile-photo">
-      <img src="profile-picture.webp" alt="Osinachi Okpara">
+    <div class="mobile-top-bar" id="mobile-top-bar">
+      <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle dark mode"></button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
-    <div class="contact-links">
-      <a href="mailto:okparaosi17@gmail.com">Email</a>
-      <span class="dot">&middot;</span>
-      <a href="https://linkedin.com/in/osinachiokpara" target="_blank" rel="noopener">LinkedIn</a>
-      <span class="dot">&middot;</span>
-      <a href="https://github.com/sin4ch" target="_blank" rel="noopener">GitHub</a>
-      <span class="dot">&middot;</span>
-      <a href="https://x.com/sin4ch" target="_blank" rel="noopener">X</a>
-      <span class="dot">&middot;</span>
-      <a href="https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view" target="_blank" rel="noopener">Resume</a>
+    <div class="layout">
+      <nav class="sidebar" id="sidebar">
+        <div class="nav-links">
+          <button class="nav-item active" data-target="about">About</button>
+          <button class="nav-item" data-target="projects">Projects</button>
+          <button class="nav-item" data-target="opensource">Open Source</button>
+          <button class="nav-item" data-target="writing">Writing</button>
+          <button class="nav-item" data-target="talks">Speaking & Hosting</button>
+          <button class="nav-item" data-target="gallery">Gallery</button>
+          <button class="nav-item" data-target="experience">Experience</button>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
+        </div>
+      </nav>
+      <main class="content">
+        <div class="scroll-indicator" id="scroll-indicator">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <!-- About -->
+        <section id="about" class="active">
+          <div class="section-description about-intro">Hi, I'm Osinachi Okpara, a software engineer, developer advocate, and <a href="https://builder.aws.com/community/community-builders" target="_blank" rel="noopener">AWS Community Builder</a> passionate about <span class="typewriter-text" id="typewriter-text"></span><span class="typewriter-cursor">|</span></div>
+        </section>
+
+        <!-- Projects -->
+        <section id="projects">
+          <div class="section-description">Selected projects.</div>
+          <div class="items">
+            <div class="item">
+              <div class="item-meta">2025</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/sin4ch/mono-mcp" target="_blank" rel="noopener">Mono Banking MCP Server</a></div>
+                <div class="item-description">MCP server for Nigerian banking operations via Mono Open Banking API</div>
+                <div class="item-tools">Python, FastMCP, PostgreSQL, Claude</div>
+                <div class="item-stats">53 Stars · 11 Forks</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/sin4ch/qgjob" target="_blank" rel="noopener">QualGent Job Orchestrator</a></div>
+                <div class="item-description">Production-ready job orchestration system for AppWright automated tests on BrowserStack and GitHub Actions runners</div>
+                <div class="item-tools">Python, Click, FastAPI, Redis, PostgreSQL, Docker, GitHub Actions</div>
+                <div class="item-stats">2 Stars · 1 Fork</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/sin4ch/aws-innovation-sb-api" target="_blank" rel="noopener">AWS Innovation Sandbox API</a></div>
+                <div class="item-description">FastAPI application for managing AWS Innovation Sandbox accounts and resources</div>
+                <div class="item-tools">Python, FastAPI, Boto3, AWS STS, httpx</div>
+                <div class="item-stats">1 Star · 1 Fork</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/sin4ch/quick-face-sort" target="_blank" rel="noopener">Quick Face Sort</a></div>
+                <div class="item-description">Scan a folder with media and sort out images & videos based on reference images</div>
+                <div class="item-tools">Python, Terraform, AWS Rekognition, AWS Lambda, S3</div>
+                <div class="item-stats">5 Stars · 1 Fork</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/sin4ch/resume-to-latex" target="_blank" rel="noopener">Resume to LaTeX</a></div>
+                <div class="item-description">Convert resumes to clean LaTeX format using AI</div>
+                <div class="item-tools">Python, FastAPI, React, Tailwind CSS, Gemini</div>
+                <div class="item-stats">7 Stars · 1 Fork</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Open Source -->
+        <section id="opensource">
+          <div class="section-description">Contributions to open source projects.</div>
+          <div class="items">
+            <div class="item">
+              <div class="item-meta">2026</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/6712" target="_blank" rel="noopener">Improve MCP documentation clarity about config file location</a></div>
+                <div class="item-subtitle">Anomaly Co · OpenCode</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp/issues/721" target="_blank" rel="noopener">Add OpenCode MCP configuration to README</a></div>
+                <div class="item-subtitle">Google · Chrome DevTools MCP</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">2025</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/anomalyco/opencode/pull/2707" target="_blank" rel="noopener">Enhance theme documentation with links to original sources</a></div>
+                <div class="item-subtitle">Anomaly Co · OpenCode</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/anomalyco/opencode/issues/2625" target="_blank" rel="noopener">Fix incomplete statement in config documentation</a></div>
+                <div class="item-subtitle">Anomaly Co · OpenCode</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/browser-use/browser-use/pull/2998" target="_blank" rel="noopener">Add comprehensive MCP Server documentation</a></div>
+                <div class="item-subtitle">Browser Use (YC W25) · Browser Use</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/truffle-ai/dexto/issues/309" target="_blank" rel="noopener">Create llms.txt and add View as Markdown functionality</a></div>
+                <div class="item-subtitle">Truffle AI (YC W25) · Dexto</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/aws-solutions/innovation-sandbox-on-aws/issues/19" target="_blank" rel="noopener">Enable automatic programmatic authentication for third-party APIs</a></div>
+                <div class="item-subtitle">AWS · Innovation Sandbox</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1357" target="_blank" rel="noopener">Implement Copy Page as Markdown and View as Markdown in docs</a></div>
+                <div class="item-subtitle">Slack · Bolt Python</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/slackapi/bolt-python/issues/1353" target="_blank" rel="noopener">Propose using uv instead of pip for Python guides</a></div>
+                <div class="item-subtitle">Slack · Bolt Python</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://github.com/SINTEF/ci-cd/pull/357" target="_blank" rel="noopener">Fix GitHub environment variables issue across workflow files</a></div>
+                <div class="item-subtitle">SINTEF · CI/CD</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Writing -->
+        <section id="writing">
+          <div class="section-description">Articles on cloud infrastructure, DevOps, and AI agents.</div>
+          <div class="items">
+            <div class="item">
+              <div class="item-meta">2025</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://sin4ch1.substack.com/p/llms-might-not-be-human-level-intelligent" target="_blank" rel="noopener">LLMs might not be human-level intelligent, but they sure are human</a></div>
+                <div class="item-subtitle">Oct 1</div>
+                <div class="item-tags">AI · LLMS · OPINION</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/building-a-simple-exchange-rate-mcp-server-using-fastmcp-c87d7a454545" target="_blank" rel="noopener">Building a Simple Exchange Rate MCP Server using FastMCP</a></div>
+                <div class="item-subtitle">Sep 29</div>
+                <div class="item-tags">AI · MCP · PYTHON · TUTORIAL</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://sin4ch1.substack.com/p/the-need-for-compromise-in-innovation" target="_blank" rel="noopener">The need for compromise in innovation communication in the age of AI</a></div>
+                <div class="item-subtitle">Sep 11</div>
+                <div class="item-tags">AI · INNOVATION · OPINION</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://sin4ch1.substack.com/p/were-the-ones-holding-our-tech-back" target="_blank" rel="noopener">We might just be the ones holding our tech back</a></div>
+                <div class="item-subtitle">Aug 27</div>
+                <div class="item-tags">TECH · OPINION</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/understanding-model-context-protocol-mcp-2f8f0e7e9240" target="_blank" rel="noopener">Understanding Model Context Protocol (MCP)</a></div>
+                <div class="item-subtitle">Aug 6</div>
+                <div class="item-tags">AI · MCP · LLMS</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/deploying-a-fastapi-number-classification-api-with-docker-nginx-and-aws-ec2-fe2358ef7835" target="_blank" rel="noopener">Deploying a FastAPI Number Classification API with Docker, Nginx, and AWS EC2</a></div>
+                <div class="item-subtitle">May 3</div>
+                <div class="item-tags">CLOUD · AWS · DEVOPS · DOCKER · TUTORIAL</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/why-tech-innovation-seems-slower-these-days-fe79b14d0f99" target="_blank" rel="noopener">Why Tech Innovation Seems Slower These Days</a></div>
+                <div class="item-subtitle">Apr 18</div>
+                <div class="item-tags">TECH · INNOVATION · OPINION</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.everythingdevops.dev/blog/understanding-ssh-and-ssh-keys" target="_blank" rel="noopener">Understanding SSH and SSH Keys</a></div>
+                <div class="item-subtitle">Feb 25</div>
+                <div class="item-tags">DEVOPS · LINUX · TUTORIAL</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/hng-stage-0-serving-a-simple-webpage-through-nginx-on-an-amazon-ec2-instance-c885225c3bd7" target="_blank" rel="noopener">Serving A Simple Webpage Through NGINX On An Amazon EC2 Instance</a></div>
+                <div class="item-subtitle">Jan 31</div>
+                <div class="item-tags">CLOUD · AWS · NGINX · TUTORIAL</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">2024</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/infrastructure-is-the-future-of-ai-72fd31dd7c03" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
+                <div class="item-subtitle">Dec 7</div>
+                <div class="item-tags">AI · CLOUD · INFRASTRUCTURE</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://medium.com/@sin4ch/road-to-my-aws-community-builder-application-in-january-2025-f4626330076d" target="_blank" rel="noopener">Road to My AWS Community Builder Application</a></div>
+                <div class="item-subtitle">Oct 20</div>
+                <div class="item-tags">AWS · CLOUD · CAREER</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Talks -->
+        <section id="talks">
+          <div class="section-description">Speaking and hosting engagements at industry events and conferences.</div>
+          <div class="items">
+            <div class="item">
+              <div class="item-meta">2025</div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://gdg.community.dev/events/details/google-gdg-on-campus-university-of-benin-benin-nigeria-presents-building-a-career-from-open-source-contribution-2025-11-13/" target="_blank" rel="noopener">Building a Career from Open Source Contribution</a></div>
+                <div class="item-subtitle">GDG on Campus UNIBEN</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/awscloudsecwestafrica_awscommunityday-genai-awscd25-activity-7378412697677107201-ASBh" target="_blank" rel="noopener">AI, Cloud, and the African Hustle: Turning Challenges into Opportunities</a></div>
+                <div class="item-subtitle">AWS Community Day West Africa 2025</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1958408726601453857" target="_blank" rel="noopener">Arthurite x AWS GenAI 2025</a></div>
+                <div class="item-subtitle">Arthurite Integrated</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/Geektutor/status/1953746378267509132" target="_blank" rel="noopener">From Local to Global: Real Stories of Landing Global Internships</a></div>
+                <div class="item-subtitle">X Space</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1941218347275673925" target="_blank" rel="noopener">Building an Impactful Tech Career</a></div>
+                <div class="item-subtitle">X Space with Julian Duru</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/thedevopsdojo/status/1935989233115648313" target="_blank" rel="noopener">Remote DevOps Work: Real talk & Tips</a></div>
+                <div class="item-subtitle">DevOps Dojo</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/NexaScaleHQ/status/1933898503735885951" target="_blank" rel="noopener">NexaScale 2nd Anniversary: Level Up or Get Left Behind</a></div>
+                <div class="item-subtitle">NexaScale</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title">Introduction to RESTful APIs with FastAPI</div>
+                <div class="item-subtitle">NexaScale</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title">Why Tech Matters</div>
+                <div class="item-subtitle">DheGroup Birthday Event</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://gdg.community.dev/events/details/google-gdg-on-campus-university-of-ilorin-ilorin-nigeria-presents-build-with-ai-2025/" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
+                <div class="item-subtitle">Build with AI 2025, GDG on Campus University of Ilorin</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.youtube.com/live/h-9Ph-J7Bh8" target="_blank" rel="noopener">Ultimate Beginner Guide to Acing the AWS CCP Exam</a></div>
+                <div class="item-subtitle">Cloud with Anne Academy</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1895475604759449713" target="_blank" rel="noopener">Breaking into Tech (AMA)</a></div>
+                <div class="item-subtitle">TRIIBE Network</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1883135211556475122" target="_blank" rel="noopener">Getting Started in Cloud</a></div>
+                <div class="item-subtitle">AWS Cloud Clubs, FUTO</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1877432769967423878" target="_blank" rel="noopener">Guide to Joining the AWS Community Builder's Program</a></div>
+                <div class="item-subtitle">DevOps Conclave</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">2024</div>
+              <div class="item-content">
+                <div class="item-title">Tech Vision Board for 2025</div>
+                <div class="item-subtitle">The Virtual Assistant Hub</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1865479789089349976" target="_blank" rel="noopener">Infrastructure is the Future of AI</a></div>
+                <div class="item-subtitle">DevFest Benin, GDG Benin</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1862059187137573097" target="_blank" rel="noopener">How to Build a Personal Brand to Stand Out</a></div>
+                <div class="item-subtitle">Assem Lucem, NFCS UNIBEN</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1856038008257986582" target="_blank" rel="noopener">Navigating Your Career</a></div>
+                <div class="item-subtitle">ACES UNIBEN Tech Week</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title">ACES Software Developer Club Launch</div>
+                <div class="item-subtitle">ACES, UNIBEN</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_october-was-amazing-who-am-i-kidding-activity-7257994792989560832-wO2U" target="_blank" rel="noopener">The Young and Thriving Youth Conference (AMA)</a></div>
+                <div class="item-subtitle">SCIWA</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_october-was-amazing-who-am-i-kidding-activity-7257994792989560832-wO2U" target="_blank" rel="noopener">Maximize Technology to Supercharge YOU</a></div>
+                <div class="item-subtitle">UNIBEN Tech Wave 2.0</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/awssecwestafri/status/1837146709333336118" target="_blank" rel="noopener">The Human Side of Cloud Innovation: Everyday Solutions with AWS</a></div>
+                <div class="item-subtitle">AWS Cloud Security User Group West Africa</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/sin4ch/status/1830628464602251310" target="_blank" rel="noopener">Leveraging Global Opportunities to Build your Tech Career</a></div>
+                <div class="item-subtitle">Effjays Tech Hub</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://x.com/thecloudcrowdng/status/1805239437082697827" target="_blank" rel="noopener">What, Really, is the Cloud and Why Should I Care?</a></div>
+                <div class="item-subtitle">The Cloud Crowd</div>
+                <div class="item-tags">HOST</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_bfff-activity-7197109513995374592-GkcX" target="_blank" rel="noopener">AMA Session on The Future of Technology</a></div>
+                <div class="item-subtitle">Blockchain For Financial Freedom, UNIBEN</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title">Taking Your Business to the Global Stage</div>
+                <div class="item-subtitle">Path-Finders Christian Assembly</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_navigating-into-tech-doesnt-have-to-be-hard-activity-7171934520479236096--EWi" target="_blank" rel="noopener">Upskilling: The New Currency in the World of Work</a></div>
+                <div class="item-subtitle">Cenfortech TechSkillUpEdo</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta"></div>
+              <div class="item-content">
+                <div class="item-title"><a href="https://www.linkedin.com/posts/osinachiokpara_yesterday-was-probably-up-there-among-the-activity-7156958483416784896-TIks" target="_blank" rel="noopener">How to Leverage Social Media for Career Growth</a></div>
+                <div class="item-subtitle">LinkedIn Local Benin</div>
+                <div class="item-tags">SPEAKER</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gallery -->
+        <section id="gallery">
+          <div class="section-description">Personal gallery.</div>
+          <div class="bento-grid" id="gallery-grid"></div>
+        </section>
+
+        <!-- Experience -->
+        <section id="experience">
+          <div class="section-description">Professional experience in developer advocacy, community building, and DevOps.</div>
+          <div class="items">
+            <div class="item">
+              <div class="item-meta">Oct 2025 - Present</div>
+              <div class="item-content">
+                <div class="item-title">Developer Advocate</div>
+                <div class="item-subtitle">Hackmamba · San Francisco, CA, US</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">Jan 2024 - Present</div>
+              <div class="item-content">
+                <div class="item-title">Developer Advocate & Technical Programs Lead</div>
+                <div class="item-subtitle">NexaScale · Washington, DC, US</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">Jan 2025 - Feb 2025</div>
+              <div class="item-content">
+                <div class="item-title">Developer Advocate</div>
+                <div class="item-subtitle">Learn To Cloud · New York, US</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">2024 - Present</div>
+              <div class="item-content">
+                <div class="item-title">Founder & Community Architect</div>
+                <div class="item-subtitle">The Cloud Crowd & DevOps Conclave · Lagos, NG</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-meta">Jun 2024 - Jul 2024</div>
+              <div class="item-content">
+                <div class="item-title">DevOps Engineer Intern</div>
+                <div class="item-subtitle">Hotels.ng · Lagos, NG</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Contact Bar -->
+    <div class="contact-bar" id="contact-bar">
+      <div class="profile-photo">
+        <img src="profile-picture.webp" alt="Osinachi Okpara">
+      </div>
+      <div class="contact-links">
+        <a href="mailto:okparaosi17@gmail.com">Email</a>
+        <span class="dot">&middot;</span>
+        <a href="https://linkedin.com/in/osinachiokpara" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="dot">&middot;</span>
+        <a href="https://github.com/sin4ch" target="_blank" rel="noopener">GitHub</a>
+        <span class="dot">&middot;</span>
+        <a href="https://x.com/sin4ch" target="_blank" rel="noopener">X</a>
+        <span class="dot">&middot;</span>
+        <a href="https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view" target="_blank" rel="noopener">Resume</a>
+      </div>
     </div>
   </div>
-
-  </div> <!-- End main-wrapper -->
-
   <script>
-    // Loading Screen Logic
-    const loadingScreen = document.getElementById('loading-screen');
-    const loadingPercentage = document.getElementById('loading-percentage');
-    const mainWrapper = document.getElementById('main-wrapper');
-    
+    /* ============================================
+       JS TABLE OF CONTENTS
+       ============================================
+       1.  Constants & Configuration
+       2.  Shared State
+       3.  Loading Screen
+       4.  Gallery Grid
+       5.  Favicon
+       6.  Navigation & Routing
+       7.  Scroll Indicator
+       8.  Photo Carousel
+       9.  Window Resize Handler
+       10. Theme Toggle
+       11. Cursor Follower
+       12. Lightbox / Image Viewer
+       13. Typewriter Effect
+       14. Boot
+       ============================================ */
+
+
+    /* ============================================
+       1. CONSTANTS & CONFIGURATION
+       ============================================ */
+    const INITIAL_COUNT = 4;
+    const CONCURRENCY = 4;
+    const VALID_SECTIONS = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
+    const EXTERNAL_REDIRECTS = {
+      'linkedin': 'https://linkedin.com/in/osinachiokpara',
+      'github': 'https://github.com/sin4ch',
+      'x': 'https://x.com/sin4ch',
+      'twitter': 'https://x.com/sin4ch',
+      'email': 'mailto:okparaosi17@gmail.com',
+      'resume': 'https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view'
+    };
+    const TYPEWRITER_WORDS = ['Writing', 'MCP', 'Agents', 'LLMs', 'AI', 'Open Source', 'Python', 'AWS', 'Cloud'];
+    const TYPING_SPEED = 150;
+    const DELETING_SPEED = 100;
+    const PAUSE_AFTER_WORD = 2500;
+    const PAUSE_BEFORE_DELETE = 800;
+
+
+
+    /* ============================================
+       2. SHARED STATE
+       ============================================ */
     let loadingComplete = false;
     let preloadedGalleryData = null;
     let loadedGalleryImages = [];
-    const INITIAL_COUNT = 4;
-
-    // --- Smooth percentage animation ---
     let actualPct = 0;
     let displayedPct = 0;
     let animating = false;
+    let galleryColumns = [];
+    let columnHeights = [];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let isPaused = false;
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingPercentage = document.getElementById('loading-percentage');
+    const mainWrapper = document.getElementById('main-wrapper');
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('section');
 
+
+
+    /* ============================================
+       3. LOADING SCREEN
+       ============================================ */
     function setActualProgress(pct) {
       actualPct = Math.min(pct, 100);
       if (!animating) {
@@ -1758,7 +1808,6 @@
     function animateCounter() {
       if (displayedPct < actualPct) {
         const diff = actualPct - displayedPct;
-        // Ease: move faster when far behind, decelerate near target
         const step = Math.max(0.3, diff * 0.12);
         displayedPct = Math.min(displayedPct + step, actualPct);
         loadingPercentage.textContent = Math.round(displayedPct) + '%';
@@ -1771,42 +1820,28 @@
       }
     }
 
-    // --- Phase 0: Wait for fonts, profile pic, and gallery.json BEFORE showing loading screen ---
     async function initLoadingSequence() {
-      // Fetch gallery.json while fonts load (both are "everything else")
       const jsonPromise = fetch('gallery/gallery.json')
         .then(r => r.json())
         .then(data => {
           if (data.images && data.images.length > 0) preloadedGalleryData = data;
         })
         .catch(() => console.log('Could not load gallery JSON'));
-
-      // Wait for profile pic in the HTML to finish loading
       const profileImg = document.querySelector('.profile-photo img');
       const profilePromise = profileImg && !profileImg.complete
         ? new Promise(r => { profileImg.onload = r; profileImg.onerror = r; })
         : Promise.resolve();
-
-      // Wait for ALL of: fonts, gallery.json, profile pic
       await Promise.all([document.fonts.ready, jsonPromise, profilePromise]);
-
-      // Everything else is loaded — NOW show the loading screen
       loadingScreen.classList.add('ready');
-
-      // Start Phase 1: download gallery images
       await preloadGalleryImages();
     }
 
-    // --- Phase 1: Download 4 smallest images with byte-level streaming progress ---
     async function preloadGalleryImages() {
       if (!preloadedGalleryData || !preloadedGalleryData.images.length) {
         completeLoading();
         return;
       }
-
-      const sortedImages = [...preloadedGalleryData.images]
-        .sort((a, b) => (a.fileSize || 0) - (b.fileSize || 0));
-
+      const sortedImages = [...preloadedGalleryData.images].sort((a, b) => (a.fileSize || 0) - (b.fileSize || 0));
       const initialBatch = sortedImages.slice(0, INITIAL_COUNT);
       const totalExpected = initialBatch.reduce((sum, img) => sum + (img.fileSize || 0), 0);
       let totalReceived = 0;
@@ -1845,30 +1880,25 @@
           onBytes(imgData.fileSize || 0);
         }
       });
-
       await Promise.all(imgPromises);
-
-      // Let the counter animation finish reaching 100% before transitioning
       setActualProgress(100);
       await new Promise(r => {
         function waitForAnimation() {
-          if (displayedPct >= 99.5) { r(); return; }
+          if (displayedPct >= 99.5) {
+            r();
+            return;
+          }
           requestAnimationFrame(waitForAnimation);
         }
         waitForAnimation();
       });
-
       completeLoading();
-
-      // Phase 2: remaining images load in background
       loadRemainingImages(sortedImages);
     }
 
     function loadRemainingImages(sortedImages) {
       const remaining = sortedImages.slice(INITIAL_COUNT);
       if (remaining.length === 0) return;
-
-      const CONCURRENCY = 4;
       let idx = 0;
 
       function loadNext() {
@@ -1879,9 +1909,7 @@
           imgData.naturalWidth = img.naturalWidth;
           imgData.naturalHeight = img.naturalHeight;
           loadedGalleryImages.push(imgData);
-          // Append to gallery grid
           appendToGalleryGrid(imgData);
-          // Append to carousel track
           const track = document.querySelector('.photo-carousel-track');
           if (track) {
             const imgEl = document.createElement('img');
@@ -1896,46 +1924,33 @@
         img.src = imgData.url;
       }
 
-      // Start CONCURRENCY parallel chains
       for (let i = 0; i < CONCURRENCY; i++) loadNext();
     }
 
     function completeLoading() {
       loadingComplete = true;
       loadingPercentage.textContent = '100%';
-
-      // Build gallery grid from preloaded data
       buildGalleryGrid();
-
-      // Brief pause at 100%, then transition to content
       setTimeout(() => {
-        // Animate loading screen up and main content up
         loadingScreen.classList.add('hidden');
         mainWrapper.classList.add('visible');
-        
-        // Handle initial route based on URL
         handleInitialRoute();
-        
-        // Update scroll indicator after content is rendered
         setTimeout(updateScrollIndicator, 100);
-        
-        // Position and load carousel after transition completes
         setTimeout(() => {
           positionCarousel();
           loadPhotoCarousel();
         }, 850);
-        
-        // Remove loading screen from DOM after animation
         setTimeout(() => {
           loadingScreen.style.display = 'none';
         }, 800);
       }, 300);
     }
-    
-    // Gallery grid with independent columns
-    let galleryColumns = [];
-    let columnHeights = [];
 
+
+
+    /* ============================================
+       4. GALLERY GRID
+       ============================================ */
     function getColumnCount() {
       const w = window.innerWidth;
       if (w <= 480) return 1;
@@ -1954,7 +1969,6 @@
     function buildGalleryGrid() {
       const galleryGrid = document.getElementById('gallery-grid');
       if (!galleryGrid) return;
-
       const colCount = getColumnCount();
       galleryGrid.innerHTML = '';
       galleryColumns = [];
@@ -1966,12 +1980,10 @@
         galleryColumns.push(col);
         columnHeights.push(0);
       }
-
-      // Place initial images into shortest column each time
       loadedGalleryImages.forEach((img, index) => {
         const shortestIdx = columnHeights.indexOf(Math.min(...columnHeights));
         galleryColumns[shortestIdx].appendChild(createGalleryItem(img, index));
-        columnHeights[shortestIdx] += getRenderedHeight(img) + 6; // 6px gap
+        columnHeights[shortestIdx] += getRenderedHeight(img) + 6;
       });
     }
 
@@ -1990,14 +2002,12 @@
       galleryColumns[shortestIdx].appendChild(createGalleryItem(imgData, index));
       columnHeights[shortestIdx] += getRenderedHeight(imgData) + 6;
     }
-    
-    // Start the loading sequence: everything else first, then loading screen for images
-    initLoadingSequence();
 
-    const navItems = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('section');
 
-    // Create rounded favicon
+
+    /* ============================================
+       5. FAVICON
+       ============================================ */
     function createRoundedFavicon() {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -2007,274 +2017,63 @@
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext('2d');
-        
-        // Draw circular clip
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
         ctx.closePath();
         ctx.clip();
-        
-        // Draw image
         ctx.drawImage(img, 0, 0, size, size);
-        
-        // Update favicon
         const favicon = document.getElementById('favicon');
         favicon.href = canvas.toDataURL('image/png');
       };
       img.src = 'profile-picture.webp';
     }
-    createRoundedFavicon();
 
-    // Show section function
+
+
+    /* ============================================
+       6. NAVIGATION & ROUTING
+       ============================================ */
     function showSection(targetId, updateUrl = true) {
-      // Hide all sections
       sections.forEach(section => {
         section.classList.remove('active');
       });
-      
-      // Show target section
       const targetSection = document.getElementById(targetId);
       if (targetSection) {
         targetSection.classList.add('active');
       }
-      
-      // Update nav active state
       navItems.forEach(nav => {
         nav.classList.remove('active');
         if (nav.dataset.target === targetId) {
           nav.classList.add('active');
         }
       });
-      
-      // Update URL if requested
       if (updateUrl) {
         const newHash = targetId === 'about' ? '' : '#' + targetId;
         history.pushState({ section: targetId }, '', '/' + newHash);
       }
-      
-      // Show/hide carousel based on section
       const carouselWrapper = document.getElementById('carousel-wrapper');
       if (carouselWrapper) {
-        if (targetId === 'about') {
-          carouselWrapper.classList.remove('hidden');
-          carouselWrapper.classList.add('visible');
-        } else {
-          carouselWrapper.classList.add('hidden');
-          carouselWrapper.classList.remove('visible');
-        }
+        carouselWrapper.classList.toggle('visible', targetId === 'about');
+        carouselWrapper.classList.toggle('hidden', targetId !== 'about');
       }
-      
-      // Load bento grid when GALLERY is shown
-      if (targetId === 'gallery') {
-        loadGalleryGrid();
-      }
-      
-      // Update scroll indicator
       updateScrollIndicator();
     }
-    
-    // Scroll indicator logic
-    const scrollIndicator = document.getElementById('scroll-indicator');
-    
-    function updateScrollIndicator() {
-      const activeSection = document.querySelector('section.active');
-      if (!activeSection || !scrollIndicator) return;
-      
-      const isScrollable = activeSection.scrollHeight > activeSection.clientHeight;
-      const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 20;
-      
-      if (isScrollable && !isAtBottom) {
-        scrollIndicator.classList.add('visible');
-      } else {
-        scrollIndicator.classList.remove('visible');
-      }
-    }
-    
-    // Listen for scroll on all sections
-    sections.forEach(section => {
-      section.addEventListener('scroll', updateScrollIndicator);
-    });
-    
-    // Update on resize
-    window.addEventListener('resize', updateScrollIndicator);
-    
-    // Handle browser back/forward navigation
-    window.addEventListener('popstate', (event) => {
-      if (event.state && event.state.section) {
-        showSection(event.state.section, false);
-      } else {
-        // Default to about if no state
-        const hash = window.location.hash.replace('#', '') || 'about';
-        showSection(hash, false);
-      }
-    });
-    
-    // Handle initial page load based on URL hash
+
     function handleInitialRoute() {
-      // External URL redirects (e.g., sin4.ch/linkedin -> linkedin.com/in/osinachiokpara)
-      const externalRedirects = {
-        'linkedin': 'https://linkedin.com/in/osinachiokpara',
-        'github': 'https://github.com/sin4ch',
-        'x': 'https://x.com/sin4ch',
-        'twitter': 'https://x.com/sin4ch',
-        'email': 'mailto:okparaosi17@gmail.com',
-        'resume': 'https://drive.google.com/file/d/16Zw9Vj8JVRSGUOkDNtXtd3UBYu-TIaz1/view'
-      };
-      
-      // Check if current path matches an external redirect
       const path = window.location.pathname.replace(/^\//, '').toLowerCase();
-      if (externalRedirects[path]) {
-        window.location.replace(externalRedirects[path]);
+      if (EXTERNAL_REDIRECTS[path]) {
+        window.location.replace(EXTERNAL_REDIRECTS[path]);
         return;
       }
-      
-      const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
-      
-      // Get section from hash (e.g., #projects -> projects)
       const hash = window.location.hash.replace('#', '').toLowerCase() || 'about';
-      const targetSection = validSections.includes(hash) ? hash : 'about';
-      
-      // Set initial state
+      const targetSection = VALID_SECTIONS.includes(hash) ? hash : 'about';
       const newHash = targetSection === 'about' ? '' : '#' + targetSection;
       history.replaceState({ section: targetSection }, '', '/' + newHash);
       showSection(targetSection, false);
     }
-    
-    // Handle hash change (for direct hash navigation)
-    window.addEventListener('hashchange', () => {
-      const validSections = ['about', 'projects', 'opensource', 'writing', 'talks', 'gallery', 'experience'];
-      const hash = window.location.hash.replace('#', '').toLowerCase() || 'about';
-      const targetSection = validSections.includes(hash) ? hash : 'about';
-      showSection(targetSection, false);
-    });
-    
-    // Check if we're in mobile layout
-    function isMobileLayout() {
-      return window.innerWidth <= 768;
-    }
 
-    // Position and load the photo carousel
-    function positionCarousel() {
-      const wrapper = document.getElementById('carousel-wrapper');
-      const themeToggle = document.getElementById('themeToggle');
-      const contactBar = document.getElementById('contact-bar');
-
-      if (!wrapper || !themeToggle || !contactBar) return;
-
-      if (isMobileLayout()) {
-        // On mobile: position carousel in middle area of viewport
-        const viewportHeight = window.innerHeight;
-        const carouselHeight = Math.max(Math.round(viewportHeight * 0.22), 100);
-        const topPos = Math.round(viewportHeight * 0.50);
-        wrapper.style.bottom = 'auto';
-        wrapper.style.top = topPos + 'px';
-        wrapper.style.height = carouselHeight + 'px';
-      } else {
-        // Desktop: position between theme toggle and contact bar
-        wrapper.style.bottom = 'auto';
-        const toggleRect = themeToggle.getBoundingClientRect();
-        const contactRect = contactBar.getBoundingClientRect();
-
-        const margin = 24;
-        const top = toggleRect.bottom + margin;
-        const bottom = contactRect.top;
-        const height = bottom - top;
-
-        wrapper.style.top = top + 'px';
-        wrapper.style.height = Math.max(height, 100) + 'px';
-      }
-    }
-    
-    function loadPhotoCarousel() {
-      const carousel = document.getElementById('photo-carousel');
-      if (!carousel || loadedGalleryImages.length === 0) return;
-
-      const track = document.createElement('div');
-      track.className = 'photo-carousel-track';
-
-      // Use whatever images have loaded so far (arrival order)
-      // Remaining images get appended by preloadAssets() callbacks as they arrive
-      loadedGalleryImages.forEach(img => {
-        const imgEl = document.createElement('img');
-        imgEl.src = img.blobUrl || img.url;
-        imgEl.alt = img.title || 'Gallery photo';
-        imgEl.className = 'carousel-img-loaded';
-        track.appendChild(imgEl);
-      });
-
-      carousel.innerHTML = '';
-      carousel.appendChild(track);
-
-      // Start the circular scroll engine on the next frame
-      requestAnimationFrame(() => initCarouselScroll(track));
-    }
-
-    // Circular buffer scroll engine — recycles elements instead of duplicating
-    function initCarouselScroll(track) {
-      let offset = 0;
-      let lastTimestamp = 0;
-      let isPaused = false;
-
-      // Fixed speed in px/s — stays constant regardless of how many images are loaded
-      // Based on: ~79 images × ~210px avg width / 1200s ≈ 14 px/s
-      const speed = 14;
-
-      function tick(timestamp) {
-        if (!lastTimestamp) lastTimestamp = timestamp;
-        const deltaMs = Math.min(timestamp - lastTimestamp, 100); // cap to prevent jump after tab-switch
-        lastTimestamp = timestamp;
-
-        if (!isPaused && speed > 0) {
-          offset -= speed * (deltaMs / 1000);
-
-          // Recycle: when first image fully exits left edge, move it to end
-          const first = track.firstElementChild;
-          if (first) {
-            const firstWidth = first.offsetWidth + 8;
-            if (firstWidth > 0 && Math.abs(offset) >= firstWidth) {
-              offset += firstWidth;
-              track.appendChild(first);
-            }
-          }
-
-          track.style.transform = `translateX(${offset}px)`;
-        }
-
-        requestAnimationFrame(tick);
-      }
-
-      requestAnimationFrame(tick);
-
-      // Hover pause
-      track.addEventListener('mouseenter', () => {
-        isPaused = true;
-      });
-      track.addEventListener('mouseleave', () => {
-        isPaused = false;
-        lastTimestamp = 0; // reset so next frame doesn't jump
-      });
-    }
-
-    // Reposition carousel and rebuild gallery on resize
-    let lastColCount = getColumnCount();
-    window.addEventListener('resize', () => {
-      positionCarousel();
-      const newColCount = getColumnCount();
-      if (newColCount !== lastColCount) {
-        lastColCount = newColCount;
-        buildGalleryGrid();
-      }
-    });
-    
-    function loadGalleryGrid() {
-      // Gallery grid is built incrementally — lightbox uses loadedGalleryImages directly
-    }
-
-
-    // Hamburger menu toggle
     const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
-
     const carouselWrapperEl = document.getElementById('carousel-wrapper');
 
     hamburger.addEventListener('click', () => {
@@ -2282,7 +2081,6 @@
       hamburger.classList.toggle('open');
       if (isOpen) {
         document.body.style.overflow = 'hidden';
-        // Hide carousel so it doesn't show through the overlay
         if (carouselWrapperEl) carouselWrapperEl.style.display = 'none';
       } else {
         document.body.style.overflow = '';
@@ -2290,18 +2088,14 @@
       }
     });
 
-    // Click handler for navigation
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const targetId = item.dataset.target;
         if (sidebar.classList.contains('menu-open')) {
-          // Disable section transitions so the swap is instant behind the overlay
           sections.forEach(s => s.style.transition = 'none');
           showSection(targetId);
-          // Force reflow so the instant swap applies before re-enabling transitions
           document.body.offsetHeight;
           sections.forEach(s => s.style.transition = '');
-          // Now fade out the menu to reveal the new section already in place
           sidebar.classList.remove('menu-open');
           hamburger.classList.remove('open');
           document.body.style.overflow = '';
@@ -2312,29 +2106,171 @@
       });
     });
 
-    // Theme toggle with localStorage persistence
-    const themeToggle = document.getElementById('themeToggle');
-    const themeToggleMobile = document.getElementById('themeToggleMobile');
-
-    // Load saved theme preference (also applied early in <head> for flash prevention)
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
-      if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('theme', 'dark');
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.section) {
+        showSection(event.state.section, false);
       } else {
-        localStorage.setItem('theme', 'light');
+        const hash = window.location.hash.replace('#', '') || 'about';
+        showSection(hash, false);
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase() || 'about';
+      const targetSection = VALID_SECTIONS.includes(hash) ? hash : 'about';
+      showSection(targetSection, false);
+    });
+
+
+
+    /* ============================================
+       7. SCROLL INDICATOR
+       ============================================ */
+    const scrollIndicator = document.getElementById('scroll-indicator');
+
+    function updateScrollIndicator() {
+      const activeSection = document.querySelector('section.active');
+      if (!activeSection || !scrollIndicator) return;
+      const isScrollable = activeSection.scrollHeight > activeSection.clientHeight;
+      const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 20;
+      if (isScrollable && !isAtBottom) {
+        scrollIndicator.classList.add('visible');
+      } else {
+        scrollIndicator.classList.remove('visible');
       }
     }
 
+    sections.forEach(section => {
+      section.addEventListener('scroll', updateScrollIndicator);
+    });
+
+
+
+    /* ============================================
+       8. PHOTO CAROUSEL
+       ============================================ */
+    function isMobileLayout() {
+      return window.innerWidth <= 768;
+    }
+
+    function positionCarousel() {
+      const wrapper = document.getElementById('carousel-wrapper');
+      const themeToggle = document.getElementById('themeToggle');
+      const contactBar = document.getElementById('contact-bar');
+      if (!wrapper || !themeToggle || !contactBar) return;
+      if (isMobileLayout()) {
+        const viewportHeight = window.innerHeight;
+        const carouselHeight = Math.max(Math.round(viewportHeight * 0.22), 100);
+        const topPos = Math.round(viewportHeight * 0.50);
+        wrapper.style.bottom = 'auto';
+        wrapper.style.top = topPos + 'px';
+        wrapper.style.height = carouselHeight + 'px';
+      } else {
+        wrapper.style.bottom = 'auto';
+        const toggleRect = themeToggle.getBoundingClientRect();
+        const contactRect = contactBar.getBoundingClientRect();
+        const margin = 24;
+        const top = toggleRect.bottom + margin;
+        const bottom = contactRect.top;
+        const height = bottom - top;
+        wrapper.style.top = top + 'px';
+        wrapper.style.height = Math.max(height, 100) + 'px';
+      }
+    }
+
+    function loadPhotoCarousel() {
+      const carousel = document.getElementById('photo-carousel');
+      if (!carousel || loadedGalleryImages.length === 0) return;
+      const track = document.createElement('div');
+      track.className = 'photo-carousel-track';
+      loadedGalleryImages.forEach(img => {
+        const imgEl = document.createElement('img');
+        imgEl.src = img.blobUrl || img.url;
+        imgEl.alt = img.title || 'Gallery photo';
+        imgEl.className = 'carousel-img-loaded';
+        track.appendChild(imgEl);
+      });
+      carousel.innerHTML = '';
+      carousel.appendChild(track);
+      requestAnimationFrame(() => initCarouselScroll(track));
+    }
+
+    function initCarouselScroll(track) {
+      let offset = 0;
+      let lastTimestamp = 0;
+      let isPaused = false;
+      const speed = 14;
+
+      function tick(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const deltaMs = Math.min(timestamp - lastTimestamp, 100);
+        lastTimestamp = timestamp;
+        if (!isPaused && speed > 0) {
+          offset -= speed * (deltaMs / 1000);
+          const first = track.firstElementChild;
+          if (first) {
+            const firstWidth = first.offsetWidth + 8;
+            if (firstWidth > 0 && Math.abs(offset) >= firstWidth) {
+              offset += firstWidth;
+              track.appendChild(first);
+            }
+          }
+          track.style.transform = `translateX(${offset}px)`;
+        }
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+      track.addEventListener('mouseenter', () => {
+        isPaused = true;
+      });
+      track.addEventListener('mouseleave', () => {
+        isPaused = false;
+        lastTimestamp = 0;
+      });
+    }
+
+
+
+    /* ============================================
+       9. WINDOW RESIZE HANDLER
+       ============================================ */
+    let lastColCount = getColumnCount();
+
+    window.addEventListener('resize', () => {
+      updateScrollIndicator();
+      positionCarousel();
+      const newColCount = getColumnCount();
+      if (newColCount !== lastColCount) {
+        lastColCount = newColCount;
+        buildGalleryGrid();
+      }
+    });
+
+
+
+    /* ============================================
+       10. THEME TOGGLE
+       ============================================ */
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleMobile = document.getElementById('themeToggleMobile');
     themeToggle.addEventListener('click', toggleTheme);
     if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
 
-    // Cursor follower with smooth trailing animation (desktop only)
+
+
+    /* ============================================
+       11. CURSOR FOLLOWER
+       ============================================ */
     const cursorFollower = document.getElementById('cursorFollower');
     const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.matchMedia('(hover: none)').matches;
 
@@ -2353,15 +2289,13 @@
       function animateFollower() {
         followerX += (mouseX - followerX) * ease;
         followerY += (mouseY - followerY) * ease;
-
         cursorFollower.style.left = followerX + 'px';
         cursorFollower.style.top = followerY + 'px';
-
         requestAnimationFrame(animateFollower);
       }
+
       animateFollower();
 
-      // Add hover effect on interactive elements
       const interactiveElements = document.querySelectorAll('a, button, .theme-toggle');
       interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -2373,7 +2307,11 @@
       });
     }
 
-    // Lightbox / Image Viewer
+
+
+    /* ============================================
+       12. LIGHTBOX / IMAGE VIEWER
+       ============================================ */
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxClose = document.getElementById('lightbox-close');
@@ -2381,7 +2319,6 @@
     const lightboxNext = document.getElementById('lightbox-next');
     const lightboxCounter = document.getElementById('lightbox-counter');
     const lightboxCounterDesktop = document.getElementById('lightbox-counter-desktop');
-
     let currentImageIndex = 0;
 
     function openLightbox(index) {
@@ -2416,55 +2353,32 @@
       updateLightboxImage();
     }
 
-    // Lightbox event listeners
     lightboxClose.addEventListener('click', closeLightbox);
     lightboxPrev.addEventListener('click', showPrevImage);
     lightboxNext.addEventListener('click', showNextImage);
 
-    // Mobile lightbox nav buttons
     const lightboxPrevMobile = document.querySelector('.lightbox-prev-mobile');
     const lightboxNextMobile = document.querySelector('.lightbox-next-mobile');
     if (lightboxPrevMobile) lightboxPrevMobile.addEventListener('click', showPrevImage);
     if (lightboxNextMobile) lightboxNextMobile.addEventListener('click', showNextImage);
 
-    // Close on backdrop click
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         closeLightbox();
       }
     });
 
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (!lightbox.classList.contains('active')) return;
-      
-      switch (e.key) {
-        case 'Escape':
-          closeLightbox();
-          break;
-        case 'ArrowLeft':
-          showPrevImage();
-          break;
-        case 'ArrowRight':
-          showNextImage();
-          break;
+      if (e.key === 'Escape') {
+        closeLightbox();
+      } else if (e.key === 'ArrowLeft') {
+        showPrevImage();
+      } else if (e.key === 'ArrowRight') {
+        showNextImage();
       }
     });
 
-    // Add hover effect for lightbox buttons (desktop only)
-    if (!isTouchDevice) {
-      const lightboxButtons = document.querySelectorAll('.lightbox-close, .lightbox-prev, .lightbox-next');
-      lightboxButtons.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          cursorFollower.classList.add('hovering');
-        });
-        el.addEventListener('mouseleave', () => {
-          cursorFollower.classList.remove('hovering');
-        });
-      });
-    }
-
-    // Touch swipe support for lightbox
     let touchStartX = 0;
     let touchEndX = 0;
     const lightboxContent = document.querySelector('.lightbox-content');
@@ -2486,66 +2400,55 @@
       }
     }, { passive: true });
 
-    // Typewriter effect for About section
-    const typewriterWords = ['Writing', 'MCP', 'Agents', 'LLMs', 'AI', 'Open Source', 'Python', 'AWS', 'Cloud'];
+
+
+    /* ============================================
+       13. TYPEWRITER EFFECT
+       ============================================ */
     const typewriterText = document.getElementById('typewriter-text');
-    let wordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let isPaused = false;
-    
-    const typingSpeed = 150;      // Speed of typing each character (slower)
-    const deletingSpeed = 100;    // Speed of deleting each character (slower)
-    const pauseAfterWord = 2500;  // Pause after typing complete word (longer)
-    const pauseBeforeDelete = 800; // Brief pause before starting to delete
-    
+
     function typeWriter() {
-      const currentWord = typewriterWords[wordIndex];
-      
+      const currentWord = TYPEWRITER_WORDS[wordIndex];
       if (isPaused) {
         return;
       }
-      
       if (!isDeleting) {
-        // Typing
         typewriterText.textContent = currentWord.substring(0, charIndex + 1);
         charIndex++;
-        
         if (charIndex === currentWord.length) {
-          // Finished typing, pause then start deleting
           isPaused = true;
           setTimeout(() => {
             isPaused = false;
             isDeleting = true;
             typeWriter();
-          }, pauseAfterWord);
+          }, PAUSE_AFTER_WORD);
           return;
         }
       } else {
-        // Deleting
         typewriterText.textContent = currentWord.substring(0, charIndex - 1);
         charIndex--;
-        
         if (charIndex === 0) {
-          // Finished deleting, move to next word
           isDeleting = false;
-          wordIndex = (wordIndex + 1) % typewriterWords.length;
-          
-          // Brief pause before typing next word
+          wordIndex = (wordIndex + 1) % TYPEWRITER_WORDS.length;
           isPaused = true;
           setTimeout(() => {
             isPaused = false;
             typeWriter();
-          }, pauseBeforeDelete);
+          }, PAUSE_BEFORE_DELETE);
           return;
         }
       }
-      
-      const speed = isDeleting ? deletingSpeed : typingSpeed;
+      const speed = isDeleting ? DELETING_SPEED : TYPING_SPEED;
       setTimeout(typeWriter, speed);
     }
-    
-    // Start typewriter effect
+
+
+
+    /* ============================================
+       14. BOOT
+       ============================================ */
+    createRoundedFavicon();
+    initLoadingSequence();
     typeWriter();
   </script>
 </body>
