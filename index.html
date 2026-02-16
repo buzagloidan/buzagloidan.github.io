@@ -20,9 +20,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Masonry.js and imagesLoaded for gallery layout -->
-  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-  <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
   <!-- SEO Meta Tags -->
   <meta name="description" content="Osinachi Okpara is a software engineer, developer advocate and AWS Community Builder, passionate about agentic AI, cloud engineering, and open-source software.">
@@ -58,7 +55,7 @@
   <link rel="canonical" href="https://sin4.ch">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link id="favicon" rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -101,6 +98,7 @@
       height: 100%;
       overflow: hidden;
       scroll-behavior: smooth;
+      background-color: var(--bg-light);
     }
 
     /* Cursor follower circle - hidden on touch devices */
@@ -129,7 +127,7 @@
     }
 
     body {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Geist Mono';
       background-color: var(--bg-light);
       color: var(--text-dark);
       line-height: 1.6;
@@ -280,7 +278,7 @@
     }
 
     .section-description {
-      font-family: 'Instrument Serif', serif;
+      font-family: 'Instrument Serif';
       font-size: clamp(24px, 4vw, 35px);
       line-height: 1.3;
       color: var(--text-dark);
@@ -308,14 +306,14 @@
     }
 
     .typewriter-text {
-      font-family: 'Instrument Serif', serif;
+      font-family: 'Instrument Serif';
       font-size: inherit;
       font-weight: 400;
       color: var(--text-dark);
     }
 
     .typewriter-cursor {
-      font-family: 'Instrument Serif', serif;
+      font-family: 'Instrument Serif';
       font-size: inherit;
       font-weight: 400;
       color: var(--text-dark);
@@ -586,19 +584,8 @@
 
     .photo-carousel-track {
       display: flex;
-      width: max-content;
       height: 100%;
-      animation: scroll-left 1200s linear infinite;
       will-change: transform;
-    }
-
-    .photo-carousel-track:hover {
-      animation-play-state: paused;
-    }
-
-    @keyframes scroll-left {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
     }
 
     .photo-carousel img {
@@ -607,6 +594,10 @@
       flex-shrink: 0;
       object-fit: contain;
       margin-right: 8px;
+    }
+
+    .photo-carousel img.carousel-img-loaded {
+      opacity: 1;
     }
 
     .photo-carousel.loading,
@@ -619,19 +610,26 @@
       height: 100%;
     }
 
-    /* Bento grid for gallery - Masonry layout */
+    /* Bento grid for gallery - independent columns */
     .bento-grid {
+      display: flex;
+      gap: 6px;
       width: 100%;
     }
 
+    .gallery-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
     .gallery-item {
-      position: relative;
       overflow: hidden;
       border-radius: 0;
       cursor: pointer;
       transition: transform 0.3s ease;
-      margin-bottom: 6px;
-      width: calc(16.666% - 5px); /* 6 columns */
     }
 
     .gallery-item:hover {
@@ -650,6 +648,7 @@
       position: absolute;
       left: 0;
       right: 0;
+      overflow-x: hidden;
     }
 
     #gallery .bento-grid {
@@ -709,7 +708,7 @@
       justify-content: center;
       cursor: pointer;
       transition: background-color 0.2s ease, color 0.2s ease, border-color 0s, color 0s;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Geist Mono';
     }
 
     .lightbox-close:hover,
@@ -773,12 +772,17 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #121212;
+      background-color: var(--bg-light);
       z-index: 100000;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+      opacity: 0;
+    }
+
+    .loading-screen.ready {
+      opacity: 1;
     }
 
     .loading-screen.hidden {
@@ -787,8 +791,8 @@
 
     .loading-content {
       text-align: center;
-      color: #ffead3;
-      font-family: 'Geist Mono', monospace;
+      color: var(--text-dark);
+      font-family: 'Geist Mono';
     }
 
     .loading-percentage {
@@ -814,12 +818,7 @@
        RESPONSIVE BREAKPOINTS
        ============================================ */
 
-    /* Gallery responsive columns */
-    @media (max-width: 1200px) {
-      .gallery-item {
-        width: calc(20% - 5px); /* 5 columns */
-      }
-    }
+    /* Gallery responsive — column count handled by JS */
 
     /* Tablet: 2-column layout */
     @media (max-width: 1024px) {
@@ -831,9 +830,6 @@
       }
       .content {
         grid-column: 2 / 3;
-      }
-      .gallery-item {
-        width: calc(25% - 5px); /* 4 columns */
       }
     }
 
@@ -996,10 +992,6 @@
         display: none;
       }
 
-      .gallery-item {
-        width: calc(33.333% - 4px); /* 3 columns */
-      }
-
       /* Hide carousel on mobile */
       .photo-carousel-wrapper {
         display: none !important;
@@ -1047,7 +1039,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-family: 'Geist Mono', monospace;
+        font-family: 'Geist Mono';
         transition: background-color 0.2s ease, color 0.2s ease;
       }
 
@@ -1087,8 +1079,9 @@
 
     /* Small mobile */
     @media (max-width: 480px) {
-      .gallery-item {
-        width: calc(50% - 3px); /* 2 columns */
+      #gallery {
+        padding-left: 0;
+        padding-right: 0;
       }
 
       .about-intro {
@@ -1721,7 +1714,7 @@
   <!-- Contact bar — fixed bottom on all screen sizes -->
   <div class="contact-bar" id="contact-bar">
     <div class="profile-photo">
-      <img src="profile-picture.png" alt="Osinachi Okpara">
+      <img src="profile-picture.webp" alt="Osinachi Okpara">
     </div>
     <div class="contact-links">
       <a href="mailto:okparaosi17@gmail.com">Email</a>
@@ -1745,104 +1738,175 @@
     const mainWrapper = document.getElementById('main-wrapper');
     
     let loadingComplete = false;
-    let totalBytes = 0;
-    let loadedBytes = 0;
     let preloadedGalleryData = null;
-    
-    // Update the percentage display
-    function updateProgress() {
-      const percent = totalBytes > 0 ? Math.round((loadedBytes / totalBytes) * 100) : 0;
-      loadingPercentage.textContent = percent + '%';
-    }
-    
-    // Fetch with progress tracking
-    async function fetchWithProgress(url) {
-      try {
-        const response = await fetch(url);
-        const contentLength = response.headers.get('content-length');
-        
-        if (!contentLength) {
-          // If no content-length header, just load it normally
-          const blob = await response.blob();
-          loadedBytes += blob.size;
-          updateProgress();
-          return blob;
-        }
-        
-        const total = parseInt(contentLength, 10);
-        const reader = response.body.getReader();
-        let received = 0;
-        const chunks = [];
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          
-          chunks.push(value);
-          received += value.length;
-          loadedBytes += value.length;
-          updateProgress();
-        }
-        
-        return new Blob(chunks);
-      } catch (e) {
-        // On error, still count as loaded to not block
-        return null;
+    let loadedGalleryImages = [];
+    const INITIAL_COUNT = 4;
+
+    // --- Smooth percentage animation ---
+    let actualPct = 0;
+    let displayedPct = 0;
+    let animating = false;
+
+    function setActualProgress(pct) {
+      actualPct = Math.min(pct, 100);
+      if (!animating) {
+        animating = true;
+        requestAnimationFrame(animateCounter);
       }
     }
-    
-    // Get file sizes first, then download with progress
-    async function preloadAssets() {
-      // Get gallery images from JSON
-      let galleryImageUrls = [];
-      try {
-        const response = await fetch('gallery/gallery.json');
-        const data = await response.json();
-        if (data.images && data.images.length > 0) {
-          preloadedGalleryData = data; // Store for later use
-          galleryImageUrls = data.images.map(img => img.url);
-        }
-      } catch (e) {
-        console.log('Could not load gallery JSON');
+
+    function animateCounter() {
+      if (displayedPct < actualPct) {
+        const diff = actualPct - displayedPct;
+        // Ease: move faster when far behind, decelerate near target
+        const step = Math.max(0.3, diff * 0.12);
+        displayedPct = Math.min(displayedPct + step, actualPct);
+        loadingPercentage.textContent = Math.round(displayedPct) + '%';
       }
-      
-      // Add other important images
-      const otherImages = ['profile-picture.png'];
-      const allAssetUrls = [...galleryImageUrls, ...otherImages];
-      
-      if (allAssetUrls.length === 0) {
+      if (displayedPct < 100) {
+        requestAnimationFrame(animateCounter);
+      } else {
+        loadingPercentage.textContent = '100%';
+        animating = false;
+      }
+    }
+
+    // --- Phase 0: Wait for fonts, profile pic, and gallery.json BEFORE showing loading screen ---
+    async function initLoadingSequence() {
+      // Fetch gallery.json while fonts load (both are "everything else")
+      const jsonPromise = fetch('gallery/gallery.json')
+        .then(r => r.json())
+        .then(data => {
+          if (data.images && data.images.length > 0) preloadedGalleryData = data;
+        })
+        .catch(() => console.log('Could not load gallery JSON'));
+
+      // Wait for profile pic in the HTML to finish loading
+      const profileImg = document.querySelector('.profile-photo img');
+      const profilePromise = profileImg && !profileImg.complete
+        ? new Promise(r => { profileImg.onload = r; profileImg.onerror = r; })
+        : Promise.resolve();
+
+      // Wait for ALL of: fonts, gallery.json, profile pic
+      await Promise.all([document.fonts.ready, jsonPromise, profilePromise]);
+
+      // Everything else is loaded — NOW show the loading screen
+      loadingScreen.classList.add('ready');
+
+      // Start Phase 1: download gallery images
+      await preloadGalleryImages();
+    }
+
+    // --- Phase 1: Download 4 smallest images with byte-level streaming progress ---
+    async function preloadGalleryImages() {
+      if (!preloadedGalleryData || !preloadedGalleryData.images.length) {
         completeLoading();
         return;
       }
-      
-      // First, get total size of all assets using HEAD requests
-      const sizePromises = allAssetUrls.map(async (url) => {
+
+      const sortedImages = [...preloadedGalleryData.images]
+        .sort((a, b) => (a.fileSize || 0) - (b.fileSize || 0));
+
+      const initialBatch = sortedImages.slice(0, INITIAL_COUNT);
+      const totalExpected = initialBatch.reduce((sum, img) => sum + (img.fileSize || 0), 0);
+      let totalReceived = 0;
+
+      function onBytes(n) {
+        totalReceived += n;
+        setActualProgress((totalReceived / totalExpected) * 100);
+      }
+
+      async function fetchImageWithProgress(url) {
+        const res = await fetch(url);
+        const reader = res.body.getReader();
+        const chunks = [];
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          onBytes(value.length);
+        }
+        const blob = new Blob(chunks);
+        const blobUrl = URL.createObjectURL(blob);
+        const img = new Image();
+        img.src = blobUrl;
+        await img.decode();
+        return { blobUrl, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight };
+      }
+
+      const imgPromises = initialBatch.map(async imgData => {
         try {
-          const response = await fetch(url, { method: 'HEAD' });
-          const contentLength = response.headers.get('content-length');
-          return contentLength ? parseInt(contentLength, 10) : 50000; // estimate 50KB if unknown
+          const result = await fetchImageWithProgress(imgData.url);
+          imgData.blobUrl = result.blobUrl;
+          imgData.naturalWidth = result.naturalWidth;
+          imgData.naturalHeight = result.naturalHeight;
+          loadedGalleryImages.push(imgData);
         } catch (e) {
-          return 50000; // estimate on error
+          onBytes(imgData.fileSize || 0);
         }
       });
-      
-      const sizes = await Promise.all(sizePromises);
-      totalBytes = sizes.reduce((a, b) => a + b, 0);
-      
-      // Now download all assets with progress tracking
-      const downloadPromises = allAssetUrls.map(url => fetchWithProgress(url));
-      await Promise.all(downloadPromises);
-      
+
+      await Promise.all(imgPromises);
+
+      // Let the counter animation finish reaching 100% before transitioning
+      setActualProgress(100);
+      await new Promise(r => {
+        function waitForAnimation() {
+          if (displayedPct >= 99.5) { r(); return; }
+          requestAnimationFrame(waitForAnimation);
+        }
+        waitForAnimation();
+      });
+
       completeLoading();
+
+      // Phase 2: remaining images load in background
+      loadRemainingImages(sortedImages);
     }
-    
+
+    function loadRemainingImages(sortedImages) {
+      const remaining = sortedImages.slice(INITIAL_COUNT);
+      if (remaining.length === 0) return;
+
+      const CONCURRENCY = 4;
+      let idx = 0;
+
+      function loadNext() {
+        if (idx >= remaining.length) return;
+        const imgData = remaining[idx++];
+        const img = new Image();
+        img.onload = () => {
+          imgData.naturalWidth = img.naturalWidth;
+          imgData.naturalHeight = img.naturalHeight;
+          loadedGalleryImages.push(imgData);
+          // Append to gallery grid
+          appendToGalleryGrid(imgData);
+          // Append to carousel track
+          const track = document.querySelector('.photo-carousel-track');
+          if (track) {
+            const imgEl = document.createElement('img');
+            imgEl.src = imgData.url;
+            imgEl.alt = imgData.title || 'Gallery photo';
+            imgEl.className = 'carousel-img-loaded';
+            track.appendChild(imgEl);
+          }
+          loadNext();
+        };
+        img.onerror = () => loadNext();
+        img.src = imgData.url;
+      }
+
+      // Start CONCURRENCY parallel chains
+      for (let i = 0; i < CONCURRENCY; i++) loadNext();
+    }
+
     function completeLoading() {
       loadingComplete = true;
       loadingPercentage.textContent = '100%';
-      
+
       // Build gallery grid from preloaded data
       buildGalleryGrid();
-      
+
       // Brief pause at 100%, then transition to content
       setTimeout(() => {
         // Animate loading screen up and main content up
@@ -1868,39 +1932,67 @@
       }, 300);
     }
     
-    // Build gallery grid from preloaded data
+    // Gallery grid with independent columns
+    let galleryColumns = [];
+    let columnHeights = [];
+
+    function getColumnCount() {
+      const w = window.innerWidth;
+      if (w <= 480) return 1;
+      if (w <= 768) return 2;
+      if (w <= 1024) return 3;
+      return 4;
+    }
+
+    function getRenderedHeight(imgData) {
+      if (!imgData.naturalWidth || !imgData.naturalHeight) return 200;
+      if (galleryColumns.length === 0) return 200;
+      const colWidth = galleryColumns[0].offsetWidth || 200;
+      return (imgData.naturalHeight / imgData.naturalWidth) * colWidth;
+    }
+
     function buildGalleryGrid() {
       const galleryGrid = document.getElementById('gallery-grid');
-      if (!galleryGrid || !preloadedGalleryData || !preloadedGalleryData.images) return;
-      
+      if (!galleryGrid) return;
+
+      const colCount = getColumnCount();
       galleryGrid.innerHTML = '';
-      preloadedGalleryData.images.forEach((img, index) => {
-        const spanClass = img.size && img.size.span ? `span-${img.size.span}` : '';
-        
-        const itemEl = document.createElement('div');
-        itemEl.className = `gallery-item ${spanClass}`;
-        itemEl.innerHTML = `<img src="${img.url}" alt="${img.title || 'Gallery photo'}" loading="lazy">`;
-        
-        itemEl.addEventListener('click', () => {
-          openLightbox(index);
-        });
-        
-        galleryGrid.appendChild(itemEl);
-      });
-      
-      // Initialize Masonry after images are loaded
-      imagesLoaded(galleryGrid, function() {
-        new Masonry(galleryGrid, {
-          itemSelector: '.gallery-item',
-          columnWidth: '.gallery-item',
-          percentPosition: true,
-          gutter: 6
-        });
+      galleryColumns = [];
+      columnHeights = [];
+      for (let i = 0; i < colCount; i++) {
+        const col = document.createElement('div');
+        col.className = 'gallery-column';
+        galleryGrid.appendChild(col);
+        galleryColumns.push(col);
+        columnHeights.push(0);
+      }
+
+      // Place initial images into shortest column each time
+      loadedGalleryImages.forEach((img, index) => {
+        const shortestIdx = columnHeights.indexOf(Math.min(...columnHeights));
+        galleryColumns[shortestIdx].appendChild(createGalleryItem(img, index));
+        columnHeights[shortestIdx] += getRenderedHeight(img) + 6; // 6px gap
       });
     }
+
+    function createGalleryItem(img, index) {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'gallery-item';
+      itemEl.innerHTML = `<img src="${img.blobUrl || img.url}" alt="${img.title || 'Gallery photo'}">`;
+      itemEl.addEventListener('click', () => openLightbox(index));
+      return itemEl;
+    }
+
+    function appendToGalleryGrid(imgData) {
+      if (galleryColumns.length === 0) return;
+      const index = loadedGalleryImages.indexOf(imgData);
+      const shortestIdx = columnHeights.indexOf(Math.min(...columnHeights));
+      galleryColumns[shortestIdx].appendChild(createGalleryItem(imgData, index));
+      columnHeights[shortestIdx] += getRenderedHeight(imgData) + 6;
+    }
     
-    // Start preloading
-    preloadAssets();
+    // Start the loading sequence: everything else first, then loading screen for images
+    initLoadingSequence();
 
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('section');
@@ -1929,7 +2021,7 @@
         const favicon = document.getElementById('favicon');
         favicon.href = canvas.toDataURL('image/png');
       };
-      img.src = 'profile-picture.png';
+      img.src = 'profile-picture.webp';
     }
     createRoundedFavicon();
 
@@ -2095,41 +2187,87 @@
     
     function loadPhotoCarousel() {
       const carousel = document.getElementById('photo-carousel');
-      if (!carousel || !preloadedGalleryData || !preloadedGalleryData.images) return;
-      
-      const data = preloadedGalleryData;
-      
-      if (data.images.length > 0) {
-        const track = document.createElement('div');
-        track.className = 'photo-carousel-track';
-        
-        // Shuffle images for randomized carousel
-        const shuffled = [...data.images].sort(() => Math.random() - 0.5);
-        
-        // Duplicate shuffled images for seamless infinite scroll
-        const allImages = [...shuffled, ...shuffled];
-        
-        allImages.forEach(img => {
-          const imgEl = document.createElement('img');
-          imgEl.src = img.url;
-          imgEl.alt = img.title || 'Gallery photo';
-          imgEl.loading = 'lazy';
-          track.appendChild(imgEl);
-        });
-        
-        carousel.innerHTML = '';
-        carousel.appendChild(track);
-      }
+      if (!carousel || loadedGalleryImages.length === 0) return;
+
+      const track = document.createElement('div');
+      track.className = 'photo-carousel-track';
+
+      // Use whatever images have loaded so far (arrival order)
+      // Remaining images get appended by preloadAssets() callbacks as they arrive
+      loadedGalleryImages.forEach(img => {
+        const imgEl = document.createElement('img');
+        imgEl.src = img.blobUrl || img.url;
+        imgEl.alt = img.title || 'Gallery photo';
+        imgEl.className = 'carousel-img-loaded';
+        track.appendChild(imgEl);
+      });
+
+      carousel.innerHTML = '';
+      carousel.appendChild(track);
+
+      // Start the circular scroll engine on the next frame
+      requestAnimationFrame(() => initCarouselScroll(track));
     }
-    
-    // Reposition carousel on resize
-    window.addEventListener('resize', positionCarousel);
+
+    // Circular buffer scroll engine — recycles elements instead of duplicating
+    function initCarouselScroll(track) {
+      let offset = 0;
+      let lastTimestamp = 0;
+      let isPaused = false;
+
+      // Fixed speed in px/s — stays constant regardless of how many images are loaded
+      // Based on: ~79 images × ~210px avg width / 1200s ≈ 14 px/s
+      const speed = 14;
+
+      function tick(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const deltaMs = Math.min(timestamp - lastTimestamp, 100); // cap to prevent jump after tab-switch
+        lastTimestamp = timestamp;
+
+        if (!isPaused && speed > 0) {
+          offset -= speed * (deltaMs / 1000);
+
+          // Recycle: when first image fully exits left edge, move it to end
+          const first = track.firstElementChild;
+          if (first) {
+            const firstWidth = first.offsetWidth + 8;
+            if (firstWidth > 0 && Math.abs(offset) >= firstWidth) {
+              offset += firstWidth;
+              track.appendChild(first);
+            }
+          }
+
+          track.style.transform = `translateX(${offset}px)`;
+        }
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+
+      // Hover pause
+      track.addEventListener('mouseenter', () => {
+        isPaused = true;
+      });
+      track.addEventListener('mouseleave', () => {
+        isPaused = false;
+        lastTimestamp = 0; // reset so next frame doesn't jump
+      });
+    }
+
+    // Reposition carousel and rebuild gallery on resize
+    let lastColCount = getColumnCount();
+    window.addEventListener('resize', () => {
+      positionCarousel();
+      const newColCount = getColumnCount();
+      if (newColCount !== lastColCount) {
+        lastColCount = newColCount;
+        buildGalleryGrid();
+      }
+    });
     
     function loadGalleryGrid() {
-      // Gallery is already built during preload, just ensure galleryImages is set for lightbox
-      if (preloadedGalleryData && preloadedGalleryData.images) {
-        galleryImages = preloadedGalleryData.images;
-      }
+      // Gallery grid is built incrementally — lightbox uses loadedGalleryImages directly
     }
 
 
@@ -2178,7 +2316,7 @@
     const themeToggle = document.getElementById('themeToggle');
     const themeToggleMobile = document.getElementById('themeToggleMobile');
 
-    // Load saved theme preference
+    // Load saved theme preference (also applied early in <head> for flash prevention)
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
@@ -2244,11 +2382,10 @@
     const lightboxCounter = document.getElementById('lightbox-counter');
     const lightboxCounterDesktop = document.getElementById('lightbox-counter-desktop');
 
-    let galleryImages = [];
     let currentImageIndex = 0;
 
     function openLightbox(index) {
-      if (galleryImages.length === 0) return;
+      if (loadedGalleryImages.length === 0) return;
       currentImageIndex = index;
       updateLightboxImage();
       lightbox.classList.add('active');
@@ -2261,21 +2398,21 @@
     }
 
     function updateLightboxImage() {
-      const img = galleryImages[currentImageIndex];
-      lightboxImg.src = img.url;
+      const img = loadedGalleryImages[currentImageIndex];
+      lightboxImg.src = img.blobUrl || img.url;
       lightboxImg.alt = img.title || 'Gallery photo';
-      const counterText = `${currentImageIndex + 1} / ${galleryImages.length}`;
+      const counterText = `${currentImageIndex + 1} / ${loadedGalleryImages.length}`;
       lightboxCounter.textContent = counterText;
       if (lightboxCounterDesktop) lightboxCounterDesktop.textContent = counterText;
     }
 
     function showPrevImage() {
-      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+      currentImageIndex = (currentImageIndex - 1 + loadedGalleryImages.length) % loadedGalleryImages.length;
       updateLightboxImage();
     }
 
     function showNextImage() {
-      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+      currentImageIndex = (currentImageIndex + 1) % loadedGalleryImages.length;
       updateLightboxImage();
     }
 
