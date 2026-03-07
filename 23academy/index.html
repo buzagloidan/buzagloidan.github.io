@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="23Academy - ליווי אישי 1:1 להסמכות בינלאומיות בסייבר. מ-CCST ועד OSCP עם Aviv Baruch.">
+  <meta property="og:title" content="23Academy | ליווי אישי להסמכות סייבר">
+  <meta property="og:description" content="ליווי אישי 1:1 - 7 הסמכות בינלאומיות מ-CCST ועד OSCP. לא צריך תואר.">
+  <title>23Academy | ליווי אישי להסמכות סייבר</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060a12;
+      --bg2: #090e1a;
+      --cyan: #00d4ff;
+      --cyan-dim: rgba(0,212,255,0.12);
+      --cyan-glow: 0 0 24px rgba(0,212,255,0.35);
+      --text: #eef4ff;
+      --muted: #6a80a0;
+      --card: rgba(255,255,255,0.035);
+      --border: rgba(0,212,255,0.13);
+      --border-subtle: rgba(255,255,255,0.07);
+      --gold: #f5c842;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      direction: rtl;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(6,10,18,0.82);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .logo {
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .logo em { color: #fff; font-style: normal; }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--cyan);
+      color: #060a12;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: #fff; transform: translateY(-1px); }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 1.5rem 80px;
+      overflow: hidden;
+    }
+
+    #bg-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0,212,255,0.07) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 820px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.25);
+      color: var(--cyan);
+      padding: 0.45rem 1.25rem;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 2rem;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--cyan);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.4; transform:scale(1.4); }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6.5vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.13;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    h1 .accent { color: var(--cyan); }
+
+    .hero-desc {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: #060a12;
+      padding: 1rem 2.25rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.25s;
+      box-shadow: 0 0 32px rgba(0,212,255,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 55px rgba(0,212,255,0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      padding: 1rem 2.25rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      transition: all 0.25s;
+    }
+    .btn-outline:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-3px);
+    }
+
+    .cert-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .cert-badge {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .cert-badge:hover {
+      border-color: var(--border);
+      color: var(--cyan);
+    }
+
+    /* ── STATS ── */
+    #stats {
+      background: var(--bg2);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 3.5rem 2rem;
+    }
+
+    .stats-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stat-val {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--cyan);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-lbl {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+
+    /* ── SECTION COMMONS ── */
+    .sec-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.6rem;
+    }
+
+    .sec-title {
+      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.9rem;
+    }
+
+    .sec-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* ── ROADMAP ── */
+    #roadmap {
+      padding: 7rem 1.5rem;
+    }
+
+    .roadmap-inner { max-width: 1080px; margin: 0 auto; }
+
+    .roadmap-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .r-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .r-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.04) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .r-card:hover {
+      border-color: rgba(0,212,255,0.35);
+      transform: translateY(-5px);
+      box-shadow: var(--cyan-glow);
+    }
+
+    .r-step {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.4rem;
+    }
+
+    .r-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      margin-bottom: 0.2rem;
+    }
+
+    .r-cert {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .r-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .r-tag {
+      background: rgba(0,212,255,0.09);
+      border: 1px solid rgba(0,212,255,0.18);
+      color: rgba(0,212,255,0.85);
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.71rem;
+      font-weight: 700;
+    }
+
+    .r-status {
+      position: absolute;
+      top: 1.1rem;
+      left: 1.1rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .s-live {
+      background: rgba(0,230,100,0.12);
+      color: #00e664;
+      border: 1px solid rgba(0,230,100,0.28);
+    }
+
+    .s-soon {
+      background: rgba(255,185,0,0.09);
+      color: #ffb900;
+      border: 1px solid rgba(255,185,0,0.22);
+    }
+
+    .s-final {
+      background: rgba(0,212,255,0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.28);
+    }
+
+    .r-card-final {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(0,212,255,0.07), rgba(0,80,200,0.04));
+      border-color: rgba(0,212,255,0.3);
+    }
+
+    /* ── FEATURES ── */
+    #features {
+      padding: 7rem 1.5rem;
+      background: var(--bg2);
+    }
+
+    .feat-inner { max-width: 1080px; margin: 0 auto; }
+    .feat-header { text-align: center; margin-bottom: 3.5rem; }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feat-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 2rem 1.75rem;
+      transition: all 0.3s;
+    }
+    .feat-card:hover {
+      border-color: var(--border);
+      transform: translateY(-4px);
+    }
+
+    .feat-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .feat-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+    }
+    .feat-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── NUMBERS STRIP ── */
+    #numbers {
+      padding: 5rem 1.5rem;
+    }
+
+    .numbers-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .numbers-inner { grid-template-columns: 1fr; }
+    }
+
+    .num-item {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .num-val {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--cyan);
+      line-height: 1;
+    }
+
+    .num-unit {
+      font-size: 1.2rem;
+      color: var(--muted);
+      vertical-align: super;
+    }
+
+    .num-lbl {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 7rem 1.5rem;
+      background: var(--bg2);
+    }
+
+    .contact-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .contact-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .form-wrap {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 2.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .form-wrap { padding: 1.5rem; }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 520px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    .fg {
+      margin-bottom: 1.1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+      text-align: right;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      padding: 0.85rem 1.1rem;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 1rem;
+      direction: rtl;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+      background: rgba(0,212,255,0.035);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(106,128,160,0.55);
+    }
+
+    textarea {
+      height: 110px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--cyan);
+      color: #060a12;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 0 28px rgba(0,212,255,0.28);
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 48px rgba(0,212,255,0.5);
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-msg {
+      margin-top: 1rem;
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      text-align: center;
+    }
+    .form-msg.ok {
+      background: rgba(0,230,100,0.1);
+      border: 1px solid rgba(0,230,100,0.25);
+      color: #00e664;
+      display: block;
+    }
+    .form-msg.err {
+      background: rgba(255,60,60,0.09);
+      border: 1px solid rgba(255,60,60,0.25);
+      color: #ff6666;
+      display: block;
+    }
+
+    /* Social links */
+    .socials {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .social-a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0.55rem 1.3rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px;
+      transition: all 0.2s;
+    }
+    .social-a:hover {
+      color: var(--cyan);
+      border-color: rgba(0,212,255,0.3);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--cyan); }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+    .reveal-d5 { transition-delay: 0.5s; }
+    .reveal-d6 { transition-delay: 0.6s; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">23<em>Academy</em></a>
+  <ul class="nav-links">
+    <li><a href="#roadmap">מסלול</a></li>
+    <li><a href="#features">למה אנחנו</a></li>
+    <li><a href="#contact">צור קשר</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">הרשם עכשיו ←</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="bg-canvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      ליווי אישי 1:1 · הסמכות בינלאומיות בסייבר
+    </div>
+    <h1>
+      הדרך הכי מהירה<br>
+      לעולם <span class="accent">הסייבר</span>
+    </h1>
+    <p class="hero-desc">
+      לא צריך תואר. לא צריך 3 שנים.<br>
+      אם יש לך אנגלית טובה וחשיבה טכנולוגית —<br>
+      יש לך בסיס אמיתי להתחיל ממנו.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">הרשם לקורס ←</a>
+      <a href="#roadmap" class="btn-outline">מסלול ההסמכות</a>
+    </div>
+    <div class="cert-badges">
+      <span class="cert-badge">CCST Cisco</span>
+      <span class="cert-badge">Linux Essentials</span>
+      <span class="cert-badge">Microsoft AZ-800</span>
+      <span class="cert-badge">CompTIA Security+</span>
+      <span class="cert-badge">Azure AZ-900</span>
+      <span class="cert-badge">Python PCEP</span>
+      <span class="cert-badge">OSCP</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section id="stats">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-val" data-target="7">7</div>
+      <div class="stat-lbl">הסמכות בינלאומיות</div>
+    </div>
+    <div class="stat-item reveal reveal-d1">
+      <div class="stat-val">1:1</div>
+      <div class="stat-lbl">ליווי אישי מלא</div>
+    </div>
+    <div class="stat-item reveal reveal-d2">
+      <div class="stat-val">25+</div>
+      <div class="stat-lbl">מבחנים ומעבדות</div>
+    </div>
+    <div class="stat-item reveal reveal-d3">
+      <div class="stat-val">∞</div>
+      <div class="stat-lbl">זמינות בוואטסאפ</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="roadmap-inner">
+    <div class="roadmap-header reveal">
+      <div class="sec-label">🗺 מסלול הלמידה</div>
+      <h2 class="sec-title">מפת הדרכים המלאה</h2>
+      <p class="sec-sub">7 שלבים מובנים — מרשתות בסיסיות ועד פריצה אתית מקצועית</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="r-card reveal reveal-d1">
+        <span class="r-status s-live">זמין עכשיו</span>
+        <div class="r-step">שלב 01</div>
+        <div class="r-title">Networking</div>
+        <div class="r-cert">Cisco CCST</div>
+        <div class="r-tags">
+          <span class="r-tag">OSI Model</span>
+          <span class="r-tag">TCP/UDP</span>
+          <span class="r-tag">IP & Subnetting</span>
+          <span class="r-tag">NAT / DNS</span>
+          <span class="r-tag">Packet Tracer</span>
+        </div>
+      </div>
+
+      <div class="r-card reveal reveal-d2">
+        <span class="r-status s-soon">בקרוב</span>
+        <div class="r-step">שלב 02</div>
+        <div class="r-title">Linux</div>
+        <div class="r-cert">Linux Essentials</div>
+        <div class="r-tags">
+          <span class="r-tag">File System</span>
+          <span class="r-tag">Permissions</span>
+          <span class="r-tag">Users & Groups</span>
+          <span class="r-tag">Bash</span>
+          <span class="r-tag">Networking</span>
+        </div>
+      </div>
+
+      <div class="r-card reveal reveal-d3">
+        <span class="r-status s-soon">בקרוב</span>
+        <div class="r-step">שלב 03</div>
+        <div class="r-title">Microsoft</div>
+        <div class="r-cert">AZ-800</div>
+        <div class="r-tags">
+          <span class="r-tag">Active Directory</span>
+          <span class="r-tag">Group Policy</span>
+          <span class="r-tag">DNS / DHCP</span>
+          <span class="r-tag">RDP</span>
+          <span class="r-tag">Auth & AuthZ</span>
+        </div>
+      </div>
+
+      <div class="r-card reveal reveal-d1">
+        <span class="r-status s-soon">בקרוב</span>
+        <div class="r-step">שלב 04</div>
+        <div class="r-title">Security+</div>
+        <div class="r-cert">CompTIA Security+</div>
+        <div class="r-tags">
+          <span class="r-tag">CIA Triad</span>
+          <span class="r-tag">Threats & Attacks</span>
+          <span class="r-tag">Encryption</span>
+          <span class="r-tag">IAM</span>
+          <span class="r-tag">Risk</span>
+        </div>
+      </div>
+
+      <div class="r-card reveal reveal-d2">
+        <span class="r-status s-soon">בקרוב</span>
+        <div class="r-step">שלב 05</div>
+        <div class="r-title">Python</div>
+        <div class="r-cert">PCEP™</div>
+        <div class="r-tags">
+          <span class="r-tag">Variables & Types</span>
+          <span class="r-tag">Functions</span>
+          <span class="r-tag">Files</span>
+          <span class="r-tag">Automation</span>
+          <span class="r-tag">Error Handling</span>
+        </div>
+      </div>
+
+      <div class="r-card reveal reveal-d3">
+        <span class="r-status s-soon">בקרוב</span>
+        <div class="r-step">שלב 06</div>
+        <div class="r-title">Cloud</div>
+        <div class="r-cert">Azure AZ-900</div>
+        <div class="r-tags">
+          <span class="r-tag">IaaS/PaaS/SaaS</span>
+          <span class="r-tag">Azure VMs</span>
+          <span class="r-tag">Networking</span>
+          <span class="r-tag">Cost Mgmt</span>
+        </div>
+      </div>
+
+      <div class="r-card r-card-final reveal">
+        <span class="r-status s-final">המטרה הסופית</span>
+        <div class="r-step">שלב 07 — השיא</div>
+        <div class="r-title">OSCP — Offensive Security</div>
+        <div class="r-cert">ההסמכה הנחשבת ביותר בעולם הסייבר הפוגעני</div>
+        <div class="r-tags">
+          <span class="r-tag">Enumeration & Recon</span>
+          <span class="r-tag">Manual Exploitation</span>
+          <span class="r-tag">Privilege Escalation</span>
+          <span class="r-tag">Lateral Movement</span>
+          <span class="r-tag">Active Directory Attacks</span>
+          <span class="r-tag">Post-Exploitation</span>
+          <span class="r-tag">Reporting</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="feat-inner">
+    <div class="feat-header reveal">
+      <div class="sec-label">למה 23Academy</div>
+      <h2 class="sec-title">לא רק סרטונים — תעשה בעצמך</h2>
+      <p class="sec-sub">למידה אמיתית עם ליווי אישי שלא תמצא בשום מקום אחר</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal reveal-d1">
+        <span class="feat-icon">🎯</span>
+        <div class="feat-title">ליווי 1:1 אישי</div>
+        <p class="feat-text">זמינות מלאה בוואטסאפ ובטלפון לאורך כל המסלול. לשאלות, הבהרות, ובשביל לוודא שאתה מתקדם בביטחון.</p>
+      </div>
+      <div class="feat-card reveal reveal-d2">
+        <span class="feat-icon">🔬</span>
+        <div class="feat-title">מעבדות מעשיות</div>
+        <p class="feat-text">3+ מעבדות לכל פרק, 25+ מבחנים ו-3 פרויקטים מלאים — כדי להכין אותך להסמכה האמיתית.</p>
+      </div>
+      <div class="feat-card reveal reveal-d3">
+        <span class="feat-icon">📡</span>
+        <div class="feat-title">סימולטור רשתות</div>
+        <p class="feat-text">Packet Tracer של CISCO — בנה טופולוגיות רשת, הגדר ראוטרים ושוויצ'ים ותרגל בסביבה אמיתית.</p>
+      </div>
+      <div class="feat-card reveal reveal-d1">
+        <span class="feat-icon">🏆</span>
+        <div class="feat-title">הסמכות בינלאומיות</div>
+        <p class="feat-text">7 הסמכות מוכרות עולמית שפותחות דלתות בישראל ובחו"ל. ממש ב-CV שלך.</p>
+      </div>
+      <div class="feat-card reveal reveal-d2">
+        <span class="feat-icon">💬</span>
+        <div class="feat-title">קהילת Telegram</div>
+        <p class="feat-text">קבוצה סגורה של חברי הקהילה, שיעורים אחת לשבועיים ותמיכה הדדית.</p>
+      </div>
+      <div class="feat-card reveal reveal-d3">
+        <span class="feat-icon">🚀</span>
+        <div class="feat-title">מסלול מובנה</div>
+        <p class="feat-text">7 שלבים עם רצף הגיוני — כל הסמכה בונה על הקודמת. אין בלבול, רק התקדמות.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section id="numbers">
+  <div class="numbers-inner">
+    <div class="num-item reveal">
+      <div class="num-val">3<span class="num-unit">+</span></div>
+      <div class="num-lbl">מעבדות לכל פרק</div>
+    </div>
+    <div class="num-item reveal reveal-d2">
+      <div class="num-val">25</div>
+      <div class="num-lbl">מבחנים לאורך הקורס</div>
+    </div>
+    <div class="num-item reveal reveal-d4">
+      <div class="num-val">3</div>
+      <div class="num-lbl">פרויקטים מלאים</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-header reveal">
+      <div class="sec-label">📩 השאר פרטים</div>
+      <h2 class="sec-title">מעוניין להצטרף?</h2>
+      <p class="sec-sub">השאר פרטים ואחזור אליך עם כל המידע על ההרשמה לקורס</p>
+    </div>
+
+    <div class="form-wrap reveal">
+      <form id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="fg">
+            <label for="name">שם מלא</label>
+            <input type="text" id="name" placeholder="הכנס את שמך" required>
+          </div>
+          <div class="fg">
+            <label for="phone">טלפון</label>
+            <input type="tel" id="phone" placeholder="050-0000000" required>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="message">הודעה (אופציונלי)</label>
+          <textarea id="message" placeholder="יש לך שאלות? ספר לי..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">
+          שלח פרטים ←
+        </button>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+
+    <div class="socials">
+      <a href="https://www.instagram.com/avivbaruch23/" class="social-a" target="_blank" rel="noopener">
+        📸 Instagram
+      </a>
+      <a href="https://www.linkedin.com/in/avivbaruch23/" class="social-a" target="_blank" rel="noopener">
+        💼 LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <strong>23Academy</strong> | Aviv Baruch | כל הזכויות שמורות</p>
+</footer>
+
+<script>
+(function() {
+  // ─── Canvas Particle Network ───
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function Particle() {
+    this.reset = function() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.35;
+      this.vy = (Math.random() - 0.5) * 0.35;
+      this.r = Math.random() * 1.8 + 0.4;
+      this.a = Math.random() * 0.5 + 0.15;
+    };
+    this.reset();
+    this.update = function() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    };
+    this.draw = function() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,212,255,' + this.a + ')';
+      ctx.fill();
+    };
+  }
+
+  for (var i = 0; i < 75; i++) particles.push(new Particle());
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+      for (var j = i + 1; j < particles.length; j++) {
+        var dx = particles[i].x - particles[j].x;
+        var dy = particles[i].y - particles[j].y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 110) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(0,212,255,' + (0.12 * (1 - d / 110)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // ─── Scroll Reveal ───
+  var revealEls = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(function(el) { io.observe(el); });
+
+  // ─── Sticky nav shadow ───
+  window.addEventListener('scroll', function() {
+    document.querySelector('nav').style.background =
+      window.scrollY > 40 ? 'rgba(6,10,18,0.97)' : 'rgba(6,10,18,0.82)';
+  });
+
+  // ─── Contact Form → Telegram ───
+  var BOT = '8735437151:AAFmYJtB64ELc5nljYqjnQiieEKphBtsKQw';
+  var CID = '606244671';
+
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var msg = document.getElementById('message').value.trim();
+    var btn = document.getElementById('submitBtn');
+    var out = document.getElementById('formMsg');
+
+    if (!name || !phone) {
+      out.textContent = '⚠️ אנא מלא שם וטלפון.';
+      out.className = 'form-msg err';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    out.className = 'form-msg';
+
+    var text = '\uD83D\uDD14 *ליד חדש מ-23Academy*\n\n' +
+      '\uD83D\uDC64 *שם:* ' + name + '\n' +
+      '\uD83D\uDCDE *טלפון:* ' + phone +
+      (msg ? '\n\uD83D\uDCAC *הודעה:* ' + msg : '') +
+      '\n\n\u23F0 ' + new Date().toLocaleString('he-IL');
+
+    fetch('https://api.telegram.org/bot' + BOT + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CID, text: text, parse_mode: 'Markdown' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok) {
+        out.textContent = '\u2705 הפרטים נשלחו בהצלחה! נחזור אליך בהקדם.';
+        out.className = 'form-msg ok';
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('message').value = '';
+      } else {
+        throw new Error('fail');
+      }
+    })
+    .catch(function() {
+      out.textContent = '\u274C אירעה שגיאה. אנא נסה שוב.';
+      out.className = 'form-msg err';
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = 'שלח פרטים \u2190';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
